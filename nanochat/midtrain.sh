@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script runs the pretraining for the NanoChat model on Nvidia DGX Spark.
+# This script runs the midtraining (fine-tuning) for the NanoChat model on Nvidia DGX Spark.
 # It sets up all necessary environment variables and activates the virtual environment
 # to ensure training can run even if the user has logged out and back in.
 
@@ -53,29 +53,19 @@ fi
 export PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:512
 export CUDA_LAUNCH_BLOCKING=0
 
-echo "Starting pretraining on DGX Spark Grace Blackwell GB10..."
+echo "Starting midtraining (fine-tuning) on DGX Spark Grace Blackwell GB10..."
 echo "Configuration:"
-echo "  - Model depth: 20 layers (~1.9B parameters)"
-echo "  - Device batch size: 32 (optimized for 128GB unified memory)"
-echo "  - Training optimized for single GB10 GPU"
+echo "  - Fine-tuning pretrained model for conversational AI"
+echo "  - Optimized for single GB10 GPU with 128GB unified memory"
 echo "  - Using unified memory architecture"
 echo ""
 
-# Run pretraining with DGX Spark optimized settings
-torchrun --standalone --nproc_per_node=1 -m scripts.base_train -- \
-    --depth=20 \
-    --run="nanochat-dgx-spark" \
-    --device_batch_size=32 \
-    --sample_every=100
+# Run midtraining with DGX Spark optimized settings
+torchrun --standalone --nproc_per_node=1 -m scripts.mid_train
 
 echo ""
-echo "Pretraining complete!"
-echo "Models can be found in: ~/.cache/nanochat/base_checkpoints/"
+echo "Midtraining complete!"
+echo "Fine-tuned models can be found in: ~/.cache/nanochat/mid_checkpoints/"
 echo ""
-echo "Next step: Run midtraining (fine-tuning) for conversational AI capabilities!"
-echo "Run: ./midtrain.sh"
-echo ""
-echo "Or to chat with your current model:"
-echo "  1. Activate the environment: source .venv/bin/activate"
-echo "  2. Start the web interface: python -m scripts.chat_web"
-echo "  3. Open the displayed URL in your browser"
+echo "Next step: Start a chat session with your trained model!"
+echo "Run: ./chat.sh"

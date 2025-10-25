@@ -10,103 +10,94 @@ NanoChat is a **full-stack implementation of an LLM like ChatGPT** in a single, 
 
 - **Fully Yours**: Completely configurable, tweakable, hackable, and trained by you from start to end
 - **End-to-End**: Covers tokenization, pretraining, finetuning, evaluation, inference, and web serving
-- **Accessible**: Designed to run meaningful models on budgets under $1000
-- **Educational**: Serves as the capstone project for the LLM101n course by Eureka Labs
+- **Accessible**: Designed to run meaningful models on modest hardware budgets
+- **Educational**: Perfect for learning how modern LLMs actually work
 
-Unlike massive production LLMs that cost millions to train, NanoChat focuses on **micro models** that are accessible for learning and experimentation while still producing functional ChatGPT-like conversational AI.
+## Pre-Training
+
+To set up the environment and begin training an LLM from scratch, simply run the scripts below. This will pretrain a model with default parameters including a model depth of 20 layers. The training set consists of text from many webpages, and for this part we will use the [FineWeb-EDU](https://huggingface.co/spaces/HuggingFaceFW/blogpost-fineweb-v1) dataset, specifically the sample-100B version from [karpathy/fineweb-edu-100b-shuffle](https://huggingface.co/datasets/karpathy/fineweb-edu-100b-shuffle).
+
+```bash
+# Configure the DGX Spark for CUDA 13 - Required to support the GB10 GPU
+./setup.sh
+
+# Download NanoChat and required training data
+./prepare.sh
+
+# Run pretraining - It is recommended that you run this in screen or tmux terminal as
+# training can take several days and a disconnect would cause the training to stop.
+./pretrain.sh
+```
+
+<img width="1067" height="1099" alt="Screenshot 2025-10-25 at 3 52 46 PM" src="https://github.com/user-attachments/assets/eab9dbbf-e9e1-44c6-a8c1-fbe08e5864db" />
+
+Once this completes, the base model will be able to generate tokens based on input prompts. However, it will not be able to chat properly. That will require introducing a user/assistant chat format, which is done in midtraining.
+
+## Midtraining
+
+Next up is midtraining. This stage will fine-tune the model based on [smol-SmolTalk](https://huggingface.co/datasets/HuggingFaceTB/smol-smoltalk). The training process will be the same as pretraining, but the dataset now becomes conversations, and the model adapts itself to the new special tokens that structure multi-turn conversation objects. Each conversation now looks something like this, loosely following the [OpenAI Harmony chat format](https://github.com/openai/harmony):
+
+```
+<|bos|>
+<|user_start|>What is the color of the sky?<|user_end|>
+<|assistant_start|>Red. Wait, possibly blue. I'm not sure.<|assistant_end|>
+<|user_start|>lol<|user_end|>
+<|assistant_start|>...etcetc
+```
+
+Where `<|example|>` represents special tokens, following the format of OpenAI special tokens. The midtraining stage teaches the model several key capabilities: learning special tokens for multi-turn conversations, adapting from internet document distribution to conversation patterns, and crucially learning to handle multiple choice questions (since small models don't naturally acquire this skill from web data alone). Additionally, the model learns to use tools like Python interpreters through special tokens, enabling it to solve mathematical problems and perform evaluations on common benchmarks like MMLU and GSM8K.
+
+```bash
+./midtrain.sh
+```
+
+## Chat
+
+Once midtraining completes, you can chat with your model through a **ChatGPT-like interface**:
+
+```bash
+# Simple script with environment setup
+./chat.sh
+
+# Alternative manual methods:
+# Command Line interface
+python -m scripts.chat_cli
+
+# Web-based interface
+python -m scripts.chat_web
+```
+
+**For web interface**: Visit the displayed URL (e.g., `http://your-server-ip:8000/`)
+
+## Supervised Finetuning (SFT)
+
+Following midtraining is the Supervised Fine-tuning (SFT) stage, which performs additional fine-tuning on curated, high-quality conversations. This introduces safety training. SFT addresses a key domain mismatch by formatting examples to match test-time conditions - stretching and padding data rows individually rather than concatenating them for training efficiency as done in pre/mid-training stages. This formatting alignment provides another performance boost by ensuring the model trains on data that mirrors its actual inference usage patterns.
+
+```bash
+./sft.sh
+```
+
+## Reinforcement Learning (RL)
+
+The final stage is Reinforcement Learning (RL), which provides modest performance gains and helps mitigate issues like hallucinations. Using GSM8K's objective math problem rewards, the model runs a simplified GRPO training loop that samples completions, rewards correct answers, and trains on high-reward responses. This implementation removes complexity like trust regions, PPO ratios, and z-score normalization, resulting in a REINFORCE-like approach that retains group relative advantage calculation from rewards.
+
+```bash
+./rl.sh
+```
+
+## Congratulations!
+
+You have completed the training of your model! You may now go back to the [Chat section](#chat) above and interact with your fully trained model.
 
 ## Why DGX Spark is Perfect for NanoChat
 
 The Nvidia DGX Spark's unique architecture makes it exceptionally well-suited for training the NanoChat 1.9B parameter model:
 
 - **Grace Blackwell GB10 GPU**: Optimized for AI workloads with unified memory architecture
-- **128GB Unified Memory**: Massive memory capacity allows handling large models that would OOM on traditional GPUs
+- **128GB Unified Memory**: Allows for larger models than typical high-end consumer-grade GPUs
 - **ARM-based Platform**: Energy-efficient architecture ideal for extended training sessions
-- **Single GPU Design**: Perfect match for NanoChat's educational focus and streamlined workflow
-
-The GB10's **large memory capacity compensates for moderate compute**, making it ideal for the memory-intensive transformer training process while maintaining reasonable training times.
-
-## What You'll Get
-
-After training completes on your DGX Spark, you'll have:
-- A **functional ChatGPT-like web interface** to chat with your model
-- A model with **~1.9 billion parameters** perfectly sized for the GB10's 128GB memory
-- Performance that **outperforms GPT-2** on various benchmarks
-- A complete understanding of the LLM training pipeline optimized for Grace Blackwell architecture
-- Full ownership and control over your AI model
 
 **Note**: These micro models are intentionally smaller than modern LLMs like GPT-4. They may make mistakes, be somewhat naive, and hallucinate - "a bit like children" as Karpathy describes. But they're **fully yours** and perfectly matched to the DGX Spark's capabilities.
-
-## Quick Start
-
-To set up the environment and begin training an LLM from scratch, simply run:
-
-```bash
-./setup.sh
-```
-
-This single command will handle all setup steps and initiate the training process with default parameters including a model depth of 20 layers.
-
-## What the Setup Script Does
-
-The `setup.sh` script performs the following comprehensive setup:
-
-### 1. **Repository Setup**
-- Clones the original NanoChat repository from Karpathy's GitHub
-- Updates the project configuration for CUDA 13.0 compatibility
-- Modifies `pyproject.toml` to use appropriate PyTorch and CUDA versions
-
-### 2. **Python Environment Configuration**
-- Installs `uv` package manager (if not present)
-- Creates a local virtual environment (`.venv`)
-- Installs all project dependencies via `uv sync`
-- Activates the virtual environment
-
-### 3. **Tokenizer Build**
-- Installs Rust/Cargo toolchain
-- Builds the high-performance `rustbpe` tokenizer using Maturin
-- Optimized for fast text processing during training
-
-### 4. **Dataset Preparation**
-- Downloads training dataset (240 million tokens by default)
-- Trains a custom tokenizer on the dataset
-- Evaluates tokenizer performance
-- Downloads evaluation bundle for model assessment
-
-### 5. **CUDA Toolkit Installation**
-- Installs CUDA Toolkit 13.0 optimized for DGX Spark's ARM64 architecture
-- Configures environment variables for Grace Blackwell GB10 integration
-- Adds permanent CUDA paths to shell configuration
-- Verifies GPU and CUDA installation on the unified memory system
-
-### 6. **Training Initialization**
-- Sets up Weights & Biases (wandb) logging
-- Launches training optimized for single GB10 GPU
-- **Default configuration: 20-layer transformer model** (perfect for 128GB unified memory)
-- Uses batch sizes optimized for Grace Blackwell architecture
-
-## Training Configuration
-
-The training configuration is optimized for the DGX Spark's Grace Blackwell GB10 GPU:
-
-- **Model Depth**: 20 transformer layers (~1.9B parameters)
-- **Memory Utilization**: Designed to leverage the full 128GB unified memory capacity
-- **Training Approach**: Single GPU training optimized for GB10 architecture
-- **Dataset**: 38 billion tokens (automatically downloaded and prepared)
-- **Run Name**: "nanochat-dgx"
-- **Device Batch Size**: 32 (optimized for GB10's memory bandwidth)
-- **Sampling Frequency**: Every 100 steps
-
-### DGX Spark Advantages
-
-The unique characteristics of the DGX Spark platform provide several benefits for NanoChat training:
-
-1. **Unified Memory Architecture**: Eliminates CPU-GPU memory transfers, reducing bottlenecks
-2. **Large Memory Capacity**: 128GB allows training larger models without memory constraints
-3. **Energy Efficiency**: ARM-based Grace CPU reduces power consumption during long training runs
-4. **Simplified Setup**: Single GPU eliminates distributed training complexity
-
-Our **depth=20 configuration** is specifically chosen to maximize the DGX Spark's memory advantage while providing excellent model performance.
 
 ## System Requirements
 
@@ -116,51 +107,10 @@ Our **depth=20 configuration** is specifically chosen to maximize the DGX Spark'
 - **CUDA**: 13.0 (automatically installed and optimized for Grace Blackwell)
 - **Storage**: Several GB for datasets, models, and dependencies
 
-## After Training: Chat with Your LLM
-
-Once training completes, you can interact with your model through a **ChatGPT-like web interface**:
-
-1. **Activate the environment**:
-   ```bash
-   source .venv/bin/activate
-   ```
-
-2. **Start the web server**:
-   ```bash
-   python -m scripts.chat_web
-   ```
-
-3. **Access the interface**: Visit the displayed URL (e.g., `http://your-server-ip:8000/`)
-
-4. **Start chatting**: Ask your model to write stories, explain concepts, or have conversations!
-
-### What to Expect
-
-Your model will be capable of:
-- ✅ Creative writing (stories, poems)
-- ✅ Basic question answering
-- ✅ Simple conversations
-- ✅ Code explanations (basic level)
-
-Keep in mind:
-- ⚠️ May hallucinate or make factual errors
-- ⚠️ Less sophisticated than modern LLMs
-- ⚠️ Performance similar to early GPT-2 models
-- ⚠️ "Childlike" behavior - naive but charming
-
-### Performance Evaluation
-
-After training, check your model's `report.md` file for detailed metrics including:
-- **CORE benchmarks**: Overall language understanding
-- **ARC-Challenge/Easy**: Reasoning capabilities  
-- **GSM8K**: Mathematical problem solving
-- **HumanEval**: Code generation abilities
-- **MMLU**: Multi-domain knowledge
-- **ChatCORE**: Conversational abilities
 
 ## Customizing Training
 
-To modify training parameters for your DGX Spark, you can edit the final training command in `setup.sh`:
+To modify training parameters for your DGX Spark, you can edit the final training command in `pretrain.sh`:
 
 ```bash
 torchrun --standalone --nproc_per_node=1 -m scripts.base_train -- \
@@ -210,54 +160,3 @@ The script integrates with Weights & Biases for experiment tracking. After runni
 - Re-run `uv sync` if ARM64 packages are missing
 - Verify Rust/Cargo installation for ARM architecture
 
-## Philosophy & Design
-
-NanoChat is intentionally designed as a **"strong baseline"** rather than an exhaustively configurable framework:
-
-- **No giant configuration objects** or complex abstractions
-- **Single, cohesive, minimal codebase** (~330KB, ~8K lines)
-- **Maximally hackable and forkable** for educational purposes
-- **Production-ready pipeline** from tokenization to deployment
-- **Budget-conscious** - meaningful models under $1000
-
-This makes NanoChat on DGX Spark perfect for:
-- 🎓 **Learning** how LLMs work end-to-end on modern Grace Blackwell architecture
-- 🔬 **Research** on unified memory optimization for transformer training
-- 🛠️ **Experimentation** with models that leverage large memory capacity
-- 🏗️ **Building** custom AI applications on ARM-based platforms
-- 📚 **Teaching** LLM concepts with cutting-edge hardware
-
-## Next Steps
-
-Once training is complete, you can:
-
-1. **Evaluate the model** using the provided evaluation scripts
-2. **Generate text samples** to assess model quality  
-3. **Fine-tune** the model on specific datasets for specialized tasks
-4. **Customize personality** through synthetic data generation ([Guide](https://github.com/karpathy/nanochat/discussions/139))
-5. **Export** the model for inference applications optimized for Grace Blackwell
-6. **Experiment** with larger models that take advantage of the 128GB unified memory
-
-## DGX Spark Platform Advantages
-
-The Nvidia DGX Spark offers unique benefits for LLM training:
-
-**Architecture Benefits**:
-- ✅ **Grace Blackwell GB10 GPU** - Latest generation AI acceleration
-- ✅ **128GB Unified Memory** - No CPU-GPU memory bottlenecks
-- ✅ **ARM-based Grace CPU** - Energy efficient for long training runs
-- ✅ **Single GPU Design** - Simplified setup and debugging
-
-**Training Advantages**:
-- ✅ **Memory Abundance** - Handle larger models without OOM errors
-- ✅ **Unified Memory Architecture** - Faster data loading and processing
-- ✅ **Reduced Complexity** - No distributed training coordination needed
-- ✅ **Optimal for 1.9B Models** - Perfect sweet spot for GB10 capabilities
-
-**Development Benefits**:
-- ✅ **Educational Focus** - Single GPU simplifies learning
-- ✅ **ARM Ecosystem** - Future-proof platform experience
-- ✅ **Energy Efficiency** - Lower power consumption than multi-GPU setups
-
-
-**Note**: This setup is specifically optimized for the Nvidia DGX Spark platform with Grace Blackwell GB10 GPU and 128GB unified memory. The configuration takes full advantage of the unique architecture to provide an optimal NanoChat training experience.

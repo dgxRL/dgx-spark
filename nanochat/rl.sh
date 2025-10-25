@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script runs the pretraining for the NanoChat model on Nvidia DGX Spark.
+# This script runs the Reinforcement Learning (RL) training for the NanoChat model on Nvidia DGX Spark.
 # It sets up all necessary environment variables and activates the virtual environment
 # to ensure training can run even if the user has logged out and back in.
 
@@ -41,41 +41,36 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# Verify wandb is configured
-echo "Checking wandb configuration..."
-wandb status
-if [ $? -ne 0 ]; then
-    echo "Warning: wandb not configured. You may need to run 'wandb login' first."
-    echo "Continuing anyway..."
-fi
-
 # Set optimized settings for DGX Spark GB10
 export PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:512
 export CUDA_LAUNCH_BLOCKING=0
 
-echo "Starting pretraining on DGX Spark Grace Blackwell GB10..."
+echo "Starting Reinforcement Learning (RL) training on DGX Spark Grace Blackwell GB10..."
 echo "Configuration:"
-echo "  - Model depth: 20 layers (~1.9B parameters)"
-echo "  - Device batch size: 32 (optimized for 128GB unified memory)"
-echo "  - Training optimized for single GB10 GPU"
-echo "  - Using unified memory architecture"
+echo "  - GRPO training loop with GSM8K math problem rewards"
+echo "  - Simplified REINFORCE-like approach"
+echo "  - Helps mitigate hallucinations and improve performance"
+echo "  - Optimized for single GB10 GPU with 128GB unified memory"
 echo ""
 
-# Run pretraining with DGX Spark optimized settings
-torchrun --standalone --nproc_per_node=1 -m scripts.base_train -- \
-    --depth=20 \
-    --run="nanochat-dgx-spark" \
-    --device_batch_size=32 \
-    --sample_every=100
+# Run RL training with DGX Spark optimized settings
+torchrun --standalone --nproc_per_node=1 -m scripts.chat_rl
 
 echo ""
-echo "Pretraining complete!"
-echo "Models can be found in: ~/.cache/nanochat/base_checkpoints/"
+echo "Running RL evaluation on GSM8K..."
+torchrun --standalone --nproc_per_node=1 -m scripts.chat_eval -- -i rl -a GSM8K
+
 echo ""
-echo "Next step: Run midtraining (fine-tuning) for conversational AI capabilities!"
-echo "Run: ./midtrain.sh"
+echo "Reinforcement Learning training complete!"
+echo "RL models can be found in: ~/.cache/nanochat/rl_checkpoints/"
 echo ""
-echo "Or to chat with your current model:"
-echo "  1. Activate the environment: source .venv/bin/activate"
-echo "  2. Start the web interface: python -m scripts.chat_web"
-echo "  3. Open the displayed URL in your browser"
+echo "🎉 Congratulations! Your NanoChat model is fully trained!"
+echo ""
+echo "Your model now has:"
+echo "  ✅ Base language understanding (pretraining)"
+echo "  ✅ Conversational abilities (midtraining)"
+echo "  ✅ Safety and quality improvements (SFT)"
+echo "  ✅ Reduced hallucinations (RL)"
+echo ""
+echo "Start chatting with your fully trained model:"
+echo "Run: ./chat.sh"
