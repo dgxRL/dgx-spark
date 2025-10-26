@@ -24,7 +24,7 @@ The **[Nvidia DGX Spark](https://www.nvidia.com/en-us/products/workstations/dgx-
 
 **Train a 1.9 billion parameter ChatGPT-like model on DGX Spark**
 
-NanoChat is a complete implementation for training Large Language Models from scratch, specifically optimized for the DGX Spark's unique architecture. Based on Andrej Karpathy's educational framework (see https://github.com/karpathy/nanochat), it provides a full pipeline from tokenization to a functional ChatGPT-like web interface.
+Nanochat is a complete implementation for training Large Language Models from scratch, specifically optimized for the DGX Spark's unique architecture. Based on Andrej Karpathy's educational framework (see https://github.com/karpathy/nanochat), it provides a full pipeline from tokenization to a functional ChatGPT-like web interface.
 
 - A functional **1.9B parameter transformer model**
 - **ChatGPT-like web interface** to interact with your model  
@@ -32,7 +32,7 @@ NanoChat is a complete implementation for training Large Language Models from sc
 - Complete understanding of **modern LLM training pipeline**
 - A model that's **fully yours** - no API dependencies
 
-**[→ Launch NanoChat](./nanochat/README.md)**
+**[→ Launch Nanochat](./nanochat/README.md)**
 
 ### 🗣️ LLM - Run Large Language Models
 
