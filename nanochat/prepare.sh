@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script prepares the dataset and tokenizer for training the NanoChat model.
+# This script prepares the dataset and tokenizer for training the Nanochat model.
 # It assumes that the environment has already been set up using setup.sh.
 #
 # Author: Jason Cox

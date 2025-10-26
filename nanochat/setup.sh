@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script sets up the Spark DGX environment for training the NanoChat model.
+# This script sets up the Spark DGX environment for training the Nanochat model.
 # It installs the necessary dependencies, including CUDA Toolkit 13.0, sets up the Python virtual environment,
 # builds the tokenizer, downloads the dataset, and prepares everything for training.
 # Use pretrain.sh to start the actual training process.

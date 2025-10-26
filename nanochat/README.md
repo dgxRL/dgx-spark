@@ -1,12 +1,12 @@
-# NanoChat for Nvidia DGX Spark
+# Nanochat for Nvidia DGX Spark
 
 > "The best ChatGPT that $100 can buy" - Andrej Karpathy
 
-This project provides a complete setup for training a Large Language Model (LLM) from scratch using the NanoChat framework specifically optimized for the **Nvidia DGX Spark** platform. The setup leverages the unique capabilities of the DGX Spark's Grace Blackwell GB10 GPU architecture with 128GB unified memory, making it ideal for training the 1.9B parameter model despite the GB10's moderate compute power.
+This project provides a complete setup for training a Large Language Model (LLM) from scratch using the [Nanochat framework](https://github.com/karpathy/nanochat) created by [Andrej Karpathy](https://github.com/karpathy). This version has been specifically optimized for the **Nvidia DGX Spark** platform. The setup leverages the unique capabilities of the DGX Spark's Grace Blackwell GB10 GPU architecture with 128GB unified memory, making it ideal for training the 1.9B parameter model despite the GB10's moderate compute power.
 
 ## Overview
 
-NanoChat is a **full-stack implementation of an LLM like ChatGPT** in a single, clean, minimal, hackable, dependency-lite codebase. Created by Andrej Karpathy, it's designed to be:
+Nanochat is a **full-stack implementation of an LLM like ChatGPT** in a single, clean, minimal, hackable, dependency-lite codebase. 
 
 - **Fully Yours**: Completely configurable, tweakable, hackable, and trained by you from start to end
 - **End-to-End**: Covers tokenization, pretraining, finetuning, evaluation, inference, and web serving
@@ -21,7 +21,7 @@ To set up the environment and begin training an LLM from scratch, simply run the
 # Configure the DGX Spark for CUDA 13 - Required to support the GB10 GPU
 ./setup.sh
 
-# Download NanoChat and required training data
+# Download Nanochat and required training data
 ./prepare.sh
 
 # Run pretraining - It is recommended that you run this in screen or tmux terminal as
@@ -89,9 +89,9 @@ The final stage is Reinforcement Learning (RL), which provides modest performanc
 
 You have completed the training of your model! You may now go back to the [Chat section](#chat) above and interact with your fully trained model.
 
-## Why DGX Spark is Perfect for NanoChat
+## Why DGX Spark is Perfect for Nanochat
 
-The Nvidia DGX Spark's unique architecture makes it exceptionally well-suited for training the NanoChat 1.9B parameter model:
+The Nvidia DGX Spark's unique architecture makes it exceptionally well-suited for training the Nanochat 1.9B parameter model:
 
 - **Grace Blackwell GB10 GPU**: Optimized for AI workloads with unified memory architecture
 - **128GB Unified Memory**: Allows for larger models than typical high-end consumer-grade GPUs

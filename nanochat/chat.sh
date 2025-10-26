@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script starts a chat session with your trained NanoChat model on Nvidia DGX Spark.
+# This script starts a chat session with your trained Nanochat model on Nvidia DGX Spark.
 # It sets up all necessary environment variables and launches the web interface.
 
 # Check if we're in the nanochat directory
@@ -45,7 +45,7 @@ export PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:512
 export CUDA_LAUNCH_BLOCKING=0
 
 echo ""
-echo "Starting NanoChat web interface on DGX Spark..."
+echo "Starting Nanochat web interface on DGX Spark..."
 echo ""
 echo "🤖 Your personal ChatGPT-like AI is starting up!"
 echo ""

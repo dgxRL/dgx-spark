@@ -20,7 +20,7 @@ The **[Nvidia DGX Spark](https://www.nvidia.com/en-us/products/workstations/dgx-
 
 ## Projects to Explore
 
-### 🤖 NanoChat - Train Your Own LLM from Scratch
+### 🤖 Nanochat - Train Your Own LLM from Scratch
 
 **Train a 1.9 billion parameter ChatGPT-like model on DGX Spark**
 

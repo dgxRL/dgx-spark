@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script runs the Supervised Fine-tuning (SFT) for the NanoChat model on Nvidia DGX Spark.
+# This script runs the Supervised Fine-tuning (SFT) for the Nanochat model on Nvidia DGX Spark.
 # It sets up all necessary environment variables and activates the virtual environment
 # to ensure training can run even if the user has logged out and back in.
 #
