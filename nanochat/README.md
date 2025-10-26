@@ -89,15 +89,8 @@ The final stage is Reinforcement Learning (RL), which provides modest performanc
 
 You have completed the training of your model! You may now go back to the [Chat section](#chat) above and interact with your fully trained model.
 
-## Why DGX Spark is Perfect for Nanochat
+_These micro models are intentionally smaller than modern LLMs like GPT-4. They may make mistakes, are somewhat naive, and hallucinate - "a bit like children" as Karpathy describes. But they're **fully yours** and perfectly matched to the DGX Spark's capabilities._
 
-The Nvidia DGX Spark's unique architecture makes it exceptionally well-suited for training the Nanochat 1.9B parameter model:
-
-- **Grace Blackwell GB10 GPU**: Optimized for AI workloads with unified memory architecture
-- **128GB Unified Memory**: Allows for larger models than typical high-end consumer-grade GPUs
-- **ARM-based Platform**: Energy-efficient architecture ideal for extended training sessions
-
-**Note**: These micro models are intentionally smaller than modern LLMs like GPT-4. They may make mistakes, be somewhat naive, and hallucinate - "a bit like children" as Karpathy describes. But they're **fully yours** and perfectly matched to the DGX Spark's capabilities.
 
 ## System Requirements
 
@@ -160,3 +153,6 @@ The script integrates with Weights & Biases for experiment tracking. After runni
 - Re-run `uv sync` if ARM64 packages are missing
 - Verify Rust/Cargo installation for ARM architecture
 
+---
+
+"The best way to predict the future is to build it yourself."
