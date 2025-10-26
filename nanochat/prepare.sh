@@ -2,6 +2,10 @@
 
 # This script prepares the dataset and tokenizer for training the Nanochat model.
 # It assumes that the environment has already been set up using setup.sh.
+#
+# Author: Jason Cox
+# Date: 2025-10-25
+# https://github.com/jasonacox/dgx-spark
 
 # Check to make sure CUDA 13 is installed
 # look for Build cuda_13.0.r13.0/compiler.36424714_0

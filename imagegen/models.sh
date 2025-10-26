@@ -2,6 +2,10 @@
 
 # ImageGen Model Management Script for Nvidia DGX Spark
 # This script will manage AI models for image and video generation
+#
+# Author: Jason Cox
+# Date: 2025-10-25
+# https://github.com/jasonacox/dgx-spark
 
 set -e  # Exit on any error
 
@@ -35,11 +39,17 @@ if [ ! -d "models" ]; then
     exit 1
 fi
 
+# Load HF_TOKEN from .env file if it exists and HF_TOKEN is not already set
+if [ -z "$HF_TOKEN" ] && [ -f ".env" ]; then
+    export $(grep -v '^#' .env | grep HF_TOKEN | xargs)
+fi
+
 # Function to download with progress and verification
 download_model() {
     local url="$1"
     local output_path="$2"
     local description="$3"
+    local requires_auth="${4:-false}"
     
     print_status "Downloading $description..."
     
@@ -56,22 +66,76 @@ download_model() {
     # Create directory if it doesn't exist
     mkdir -p "$(dirname "$output_path")"
     
+    # Check for Hugging Face token if authentication is required
+    if [ "$requires_auth" = "true" ]; then
+        if [ -z "$HF_TOKEN" ] && [ ! -f "$HOME/.huggingface/token" ]; then
+            print_error "Authentication required for $description"
+            echo ""
+            print_warning "Hugging Face token not found."
+            echo "Please follow these steps:"
+            echo "  1. Visit https://huggingface.co/settings/tokens"
+            echo "  2. Create a new token with 'repo' read access"
+            echo "  3. Copy the token"
+            echo ""
+            read -p "Paste your HF token here: " hf_token_input
+            
+            if [ -z "$hf_token_input" ]; then
+                print_error "No token provided. Cannot continue."
+                return 1
+            fi
+            
+            # Save token to .env file
+            if [ ! -f ".env" ]; then
+                cat > .env << EOF
+# Hugging Face API Token (required for gated models like Flux)
+HF_TOKEN=$hf_token_input
+EOF
+                print_status "Token saved to .env file"
+                chmod 600 .env  # Restrict permissions for security
+            else
+                # Check if HF_TOKEN already exists in .env
+                if grep -q "^HF_TOKEN=" .env; then
+                    sed -i "s|^HF_TOKEN=.*|HF_TOKEN=$hf_token_input|" .env
+                else
+                    echo "HF_TOKEN=$hf_token_input" >> .env
+                fi
+                print_status "Token updated in .env file"
+            fi
+            
+            export HF_TOKEN="$hf_token_input"
+        fi
+    fi
+    
     # Download with wget, showing progress
     if command -v wget &> /dev/null; then
-        wget --progress=bar:force:noscroll -O "$output_path" "$url"
+        if [ "$requires_auth" = "true" ] && [ -n "$HF_TOKEN" ]; then
+            wget --progress=bar:force:noscroll --header="Authorization: Bearer $HF_TOKEN" -O "$output_path" "$url" 2>&1
+        else
+            wget --progress=bar:force:noscroll -O "$output_path" "$url" 2>&1
+        fi
     elif command -v curl &> /dev/null; then
-        curl -L --progress-bar -o "$output_path" "$url"
+        if [ "$requires_auth" = "true" ] && [ -n "$HF_TOKEN" ]; then
+            curl -L --progress-bar -H "Authorization: Bearer $HF_TOKEN" -o "$output_path" "$url" 2>&1
+        else
+            curl -L --progress-bar -o "$output_path" "$url" 2>&1
+        fi
     else
         print_error "Neither wget nor curl found. Please install one of them."
         exit 1
     fi
     
-    print_status "Downloaded $description successfully!"
+    if [ $? -eq 0 ]; then
+        print_status "Downloaded $description successfully!"
+    else
+        print_error "Failed to download $description"
+        rm -f "$output_path"
+        return 1
+    fi
 }
 
 # Function to list available models
 list_models() {
-    print_header "Available models in each category:"
+    print_header "Installed models in each category:"
     echo ""
     
     echo "📁 Checkpoints:"
@@ -156,29 +220,37 @@ install_sdxl() {
 # Function to install Flux models
 install_flux() {
     print_header "Installing Flux models..."
+    print_warning "Flux models require Hugging Face authentication"
+    print_warning "If you haven't already, please set up your HF token:"
+    print_warning "  huggingface-cli login"
+    echo ""
     
     # Flux Schnell (fast generation model)
     download_model \
         "https://huggingface.co/black-forest-labs/FLUX.1-schnell/resolve/main/flux1-schnell.safetensors" \
         "models/unet/flux1-schnell.safetensors" \
-        "Flux Schnell (Fast Generation)"
+        "Flux Schnell (Fast Generation)" \
+        "true"
     
     # Flux VAE
     download_model \
         "https://huggingface.co/black-forest-labs/FLUX.1-schnell/resolve/main/ae.safetensors" \
         "models/vae/flux_vae.safetensors" \
-        "Flux VAE"
+        "Flux VAE" \
+        "true"
     
     # Flux Text Encoder
     download_model \
         "https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/clip_l.safetensors" \
         "models/clip/clip_l.safetensors" \
-        "Flux CLIP-L Text Encoder"
+        "Flux CLIP-L Text Encoder" \
+        "true"
     
     download_model \
         "https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/t5xxl_fp16.safetensors" \
         "models/clip/t5xxl_fp16.safetensors" \
-        "Flux T5-XXL Text Encoder (FP16)"
+        "Flux T5-XXL Text Encoder (FP16)" \
+        "true"
     
     print_status "Flux models installation complete!"
     print_status "Note: Flux models are optimized for fast, high-quality generation"

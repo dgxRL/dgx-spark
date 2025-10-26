@@ -3,6 +3,10 @@
 # This script runs the Reinforcement Learning (RL) training for the NanoChat model on Nvidia DGX Spark.
 # It sets up all necessary environment variables and activates the virtual environment
 # to ensure training can run even if the user has logged out and back in.
+#
+# Author: Jason Cox
+# Date: 2025-10-25
+# https://github.com/jasonacox/dgx-spark
 
 # Check if we're in the nanochat directory
 if [ ! -f "pyproject.toml" ] || [ ! -d ".venv" ]; then

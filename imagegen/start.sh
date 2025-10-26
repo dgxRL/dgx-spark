@@ -2,6 +2,10 @@
 
 # ImageGen Start Script for Nvidia DGX Spark
 # This script will launch ComfyUI interface optimized for Grace Blackwell GB10
+#
+# Author: Jason Cox
+# Date: 2025-10-25
+# https://github.com/jasonacox/dgx-spark
 
 set -e  # Exit on any error
 
