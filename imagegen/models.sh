@@ -2,6 +2,10 @@
 
 # ImageGen Model Management Script for Nvidia DGX Spark
 # This script will manage AI models for image and video generation
+#
+# Author: Jason Cox
+# Date: 2025-10-25
+# https://github.com/jasonacox/dgx-spark
 
 set -e  # Exit on any error
 

@@ -4,6 +4,10 @@
 # It installs the necessary dependencies, including CUDA Toolkit 13.0, sets up the Python virtual environment,
 # builds the tokenizer, downloads the dataset, and prepares everything for training.
 # Use pretrain.sh to start the actual training process.
+#
+# Author: Jason Cox
+# Date: 2025-10-25
+# https://github.com/jasonacox/dgx-spark
 
 # Setup script for installing CUDA Toolkit on Ubuntu 24.04 ARM64
 # Download CUDA repository pin if not already present
