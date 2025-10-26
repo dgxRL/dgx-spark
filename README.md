@@ -10,20 +10,21 @@ cd dgx-spark
 
 ## About the Nvidia DGX Spark
 
-The **Nvidia DGX Spark** represents the cutting edge of AI computing, featuring revolutionary **Grace Blackwell architecture** with **128GB unified memory** that eliminates costly CPU-GPU transfers and enables larger model training, while the **ARM-based Grace CPU** delivers exceptional energy efficiency for extended development and training workloads.
+The **[Nvidia DGX Spark](https://www.nvidia.com/en-us/products/workstations/dgx-spark/)** was designed to be a personal experimentation laboratory for AI exploration, featuring the **Grace Blackwell architecture** with **128GB unified memory**. The design eliminates costly CPU-GPU transfers and enables larger model training, while the **ARM-based Grace CPU** delivers exceptional energy efficiency for extended development and training workloads.
 
-- **GPU**: Grace Blackwell GB10
-- **Memory**: 128GB Unified Memory Architecture
-- **CPU**: ARM-based Grace CPU for energy efficiency
-- **Platform**: Ubuntu 24.04 ARM64 optimized for AI workloads
+- **GPU**: Grace Blackwell GB10 with 6,144 CUDA cores
+- **Memory**: 128GB LPDDR5x Unified Memory Architecture with 273 GB/s of bandwidth
+- **CPU**: 20-core ARM processor (10 Cortex-X925 performance cores and 10 Cortex-A725 efficiency cores)
+- **OS**: Ubuntu 24.04 ARM64 optimized for AI workloads
+- **Power**: Idle at 40–45W with 120–130W under GPU load (240W max)
 
-## Projects
+## Projects to Explore
 
 ### 🤖 NanoChat - Train Your Own LLM from Scratch
 
 **Train a 1.9 billion parameter ChatGPT-like model on DGX Spark**
 
-NanoChat is a complete implementation for training Large Language Models from scratch, specifically optimized for the DGX Spark's unique architecture. Based on Andrej Karpathy's educational framework, it provides a full pipeline from tokenization to a functional ChatGPT-like web interface.
+[NanoChat](https://github.com/karpathy/nanochat) is a complete implementation for training Large Language Models from scratch, specifically optimized for the DGX Spark's unique architecture. Based on Andrej Karpathy's educational framework, it provides a full pipeline from tokenization to a functional ChatGPT-like web interface.
 
 #### What You'll Get
 - A functional **1.9B parameter transformer model**
