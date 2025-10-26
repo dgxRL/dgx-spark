@@ -92,5 +92,5 @@ Coming soon to the DGX Spark development hub:
 
 ---
 
-**Built for the future of AI computing. Optimized for Grace Blackwell. Designed for developers.**
+**Explore. Experiment. Train LLMs. Generate images. Deploy AI models. All on one powerful machine.**
 
