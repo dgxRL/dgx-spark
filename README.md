@@ -10,6 +10,8 @@ cd dgx-spark
 
 ## About the Nvidia DGX Spark
 
+<img width="300" alt="Nvidia DGX Spark" src="https://github.com/user-attachments/assets/53d2977a-d170-43c4-8ac3-5c7dff81e72b" />
+
 The **[Nvidia DGX Spark](https://www.nvidia.com/en-us/products/workstations/dgx-spark/)** was designed to be a personal experimentation laboratory for AI exploration, featuring the **Grace Blackwell architecture** with **128GB unified memory**. The design eliminates costly CPU-GPU transfers and enables larger model training, while the **ARM-based Grace CPU** delivers exceptional energy efficiency for extended development and training workloads.
 
 - **GPU**: Grace Blackwell GB10 with 6,144 CUDA cores
