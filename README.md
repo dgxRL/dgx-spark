@@ -26,19 +26,11 @@ The **[Nvidia DGX Spark](https://www.nvidia.com/en-us/products/workstations/dgx-
 
 [NanoChat](https://github.com/karpathy/nanochat) is a complete implementation for training Large Language Models from scratch, specifically optimized for the DGX Spark's unique architecture. Based on Andrej Karpathy's educational framework, it provides a full pipeline from tokenization to a functional ChatGPT-like web interface.
 
-#### What You'll Get
 - A functional **1.9B parameter transformer model**
 - **ChatGPT-like web interface** to interact with your model  
 - Performance that **outperforms GPT-2** on benchmarks
 - Complete understanding of **modern LLM training pipeline**
 - A model that's **fully yours** - no API dependencies
-
-#### Perfect for
-- 🎓 **Learning** how modern LLMs actually work
-- 🔬 **Research** on transformer architectures and training techniques  
-- 🛠️ **Experimentation** with AI model customization
-- 🏗️ **Building** custom AI applications and chatbots
-- 📚 **Teaching** AI/ML concepts with hands-on experience
 
 **[→ Get started with NanoChat](./nanochat/README.md)**
 
@@ -48,7 +40,6 @@ The **[Nvidia DGX Spark](https://www.nvidia.com/en-us/products/workstations/dgx-
 
 The large memory footprint of the DGX Spark means that you can run large LLMs that would normally require multiple GPUs. This project helps you deploy powerful open source language models with simple CLI and web-based chat interfaces.
 
-#### Features
 - Support for popular models like Llama, Mistral,Qwen, and more
 - Simple CLI interface for quick interactions
 - Web-based chatbot for user-friendly conversations
@@ -62,7 +53,6 @@ The large memory footprint of the DGX Spark means that you can run large LLMs th
 
 This project helps you set up the DGX Spark to run high-fidelity open source models capable of generating and editing professional-quality images and videos. Get a complete ComfyUI setup running on your DGX Spark for creative AI workflows.
 
-#### Capabilities
 - High-resolution image generation
 - Video creation and editing
 - Style transfer and artistic effects
