@@ -2,11 +2,11 @@
 
 > "The best ChatGPT that $100 can buy" - Andrej Karpathy
 
-This project provides a complete setup for training a Large Language Model (LLM) from scratch using the Nanochat framework specifically optimized for the **Nvidia DGX Spark** platform. The setup leverages the unique capabilities of the DGX Spark's Grace Blackwell GB10 GPU architecture with 128GB unified memory, making it ideal for training the 1.9B parameter model despite the GB10's moderate compute power.
+This project provides a complete setup for training a Large Language Model (LLM) from scratch using the [Nanochat framework](https://github.com/karpathy/nanochat) created by [Andrej Karpathy](https://github.com/karpathy). This version has been specifically optimized for the **Nvidia DGX Spark** platform. The setup leverages the unique capabilities of the DGX Spark's Grace Blackwell GB10 GPU architecture with 128GB unified memory, making it ideal for training the 1.9B parameter model despite the GB10's moderate compute power.
 
 ## Overview
 
-Nanochat is a **full-stack implementation of an LLM like ChatGPT** in a single, clean, minimal, hackable, dependency-lite codebase. Created by Andrej Karpathy, it's designed to be:
+Nanochat is a **full-stack implementation of an LLM like ChatGPT** in a single, clean, minimal, hackable, dependency-lite codebase. 
 
 - **Fully Yours**: Completely configurable, tweakable, hackable, and trained by you from start to end
 - **End-to-End**: Covers tokenization, pretraining, finetuning, evaluation, inference, and web serving
