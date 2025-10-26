@@ -91,6 +91,7 @@ You have completed the training of your model! You may now go back to the [Chat 
 
 _These micro models are intentionally smaller than modern LLMs like GPT-4. They may make mistakes, are somewhat naive, and hallucinate - "a bit like children" as Karpathy describes. But they're **fully yours** and perfectly matched to the DGX Spark's capabilities._
 
+---
 
 ## System Requirements
 
@@ -99,7 +100,6 @@ _These micro models are intentionally smaller than modern LLMs like GPT-4. They 
 - **OS**: Ubuntu 24.04 ARM64
 - **CUDA**: 13.0 (automatically installed and optimized for Grace Blackwell)
 - **Storage**: Several GB for datasets, models, and dependencies
-
 
 ## Customizing Training
 
@@ -118,14 +118,6 @@ torchrun --standalone --nproc_per_node=1 -m scripts.base_train -- \
 - `--run`: Experiment name for logging
 - `--device_batch_size`: Batch size optimized for Grace Blackwell memory bandwidth
 - `--sample_every`: Steps between sample generations
-
-### DGX Spark Optimization Notes
-
-The 128GB unified memory of the DGX Spark allows for:
-- **Larger batch sizes** without memory constraints
-- **Deeper models** than typically possible on traditional GPUs
-- **Simplified memory management** due to unified architecture
-- **No memory fragmentation** issues common in multi-GPU setups
 
 ## Monitoring Progress
 
