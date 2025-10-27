@@ -22,10 +22,10 @@ The **[Nvidia DGX Spark](https://www.nvidia.com/en-us/products/workstations/dgx-
 
 ## Projects to Explore
 
-### 🤖 Nanochat - Train Your Own LLM from Scratch
+### [🤖 Nanochat - Train Your Own LLM from Scratch](./nanochat/README.md)
 
 **Train a 1.9 billion parameter ChatGPT-like model on DGX Spark**
-**[→ Launch Nanochat](./nanochat/README.md)**
+**[→ Nanochat](./nanochat/README.md)**
 
 Nanochat is a complete implementation for training Large Language Models from scratch, specifically optimized for the DGX Spark's unique architecture. Based on Andrej Karpathy's educational framework (see https://github.com/karpathy/nanochat), it provides a full pipeline from tokenization to a functional ChatGPT-like web interface.
 
@@ -37,10 +37,10 @@ Nanochat is a complete implementation for training Large Language Models from sc
 
 
 
-### 🗣️ LLM - Run Large Language Models
+### [🗣️ LLM - Run Large Language Models](./llm/README.md)
 
 **Deploy and chat with state-of-the-art open source models**
-**[→ Launch LLM](./llm/README.md)**
+**[→ LLM](./llm/README.md)**
 
 The large memory footprint of the DGX Spark means that you can run large LLMs that would normally require multiple GPUs. This project helps you deploy powerful open source language models with simple CLI and web-based chat interfaces.
 
@@ -51,10 +51,10 @@ The large memory footprint of the DGX Spark means that you can run large LLMs th
 
 
 
-### 🎨 ImageGen - Generate High-Quality Images
+### [🎨 ImageGen - Generate High-Quality Images](./imagegen/README.md)
 
 **Create stunning images and videos with AI**
-**[→ Launch ImageGen](./imagegen/README.md)**
+**[→ ImageGen](./imagegen/README.md)**
 
 This project helps you set up the DGX Spark to run high-fidelity open source models capable of generating and editing professional-quality images and videos. Get a complete ComfyUI setup running on your DGX Spark for creative AI workflows.
 
