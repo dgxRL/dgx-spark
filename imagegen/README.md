@@ -10,34 +10,14 @@ The Grace Blackwell architecture's unified memory and high-performance compute m
 
 ## Supported Models
 
-### Base Models (`./models.sh install base` - 4GB)
-Essential starter models for all workflows:
-- **Stable Diffusion v1.5** - General image generation, LoRA/ControlNet compatible
-- **SD VAE** - Enhanced image quality and color accuracy  
-- **4x ESRGAN** - Basic upscaling for detail enhancement
-
-### SDXL Models (`./models.sh install sdxl` - 13.5GB)
-High-resolution professional generation:
-- **SDXL Base & Refiner** - 1024x1024 native resolution with superior detail
-- **SDXL VAE** - Optimized for high-quality FP16 processing
-
-### Flux Models (`./models.sh install flux` - 29GB)
-Cutting-edge AI generation:
-- **Flux Schnell** - Ultra-fast generation with advanced text understanding
-- **Text Encoders** - Enhanced prompt interpretation and adherence
-
-### ControlNet Models (`./models.sh install controlnet` - 4.2GB)
-Guided generation tools:
-- **Canny, Depth, OpenPose** - Edge, 3D structure, and pose control
-
-### Video Models (`./models.sh install video` - 10GB)
-Motion and animation:
-- **Stable Video Diffusion XT** - Image-to-video with smooth motion synthesis
-
-### Upscale Models (`./models.sh install upscale` - 2.1GB)
-Image enhancement:
-- **ESRGAN (2x/4x)** - Standard upscaling for general use
-- **LDSR** - Highest quality latent diffusion super-resolution
+| Model Category | Size | Models Included | Description |
+|----------------|------|-----------------|-------------|
+| **Base Models** (`./models.sh install base`) | 4GB | • Stable Diffusion v1.5<br>• SD VAE<br>• 4x ESRGAN | Essential starter models for all workflows. General image generation, LoRA/ControlNet compatible, with enhanced image quality and basic upscaling. |
+| **SDXL Models** (`./models.sh install sdxl`) | 13.5GB | • SDXL Base & Refiner<br>• SDXL VAE | High-resolution professional generation with 1024x1024 native resolution, superior detail, and optimized FP16 processing. |
+| **Flux Models** (`./models.sh install flux`) | 29GB | • Flux Schnell<br>• Text Encoders | Cutting-edge AI generation with ultra-fast generation, advanced text understanding, and enhanced prompt interpretation. |
+| **ControlNet Models** (`./models.sh install controlnet`) | 4.2GB | • Canny<br>• Depth<br>• OpenPose | Guided generation tools for edge detection, 3D structure control, and pose control. |
+| **Video Models** (`./models.sh install video`) | 10GB | • Stable Video Diffusion XT | Motion and animation with image-to-video conversion and smooth motion synthesis. |
+| **Upscale Models** (`./models.sh install upscale`) | 2.1GB | • ESRGAN (2x/4x)<br>• LDSR | Image enhancement with standard upscaling for general use and highest quality latent diffusion super-resolution. |
 
 ### Model Installation Commands
 
@@ -58,24 +38,6 @@ Image enhancement:
 ./models.sh usage             # Display storage usage
 ./models.sh remove            # Interactive removal tool
 ```
-
-### Model Recommendations by Use Case
-
-**Getting Started**: `base` - Essential models for learning
-**High Quality Images**: `base` + `sdxl` - Professional image generation  
-**Cutting-Edge Generation**: `base` + `flux` - Latest AI capabilities
-**Guided Creation**: `base` + `controlnet` - Precise creative control
-**Video Content**: `base` + `video` - Motion and animation
-**Complete Studio**: `all` - Everything for professional workflows
-
-### Storage Requirements
-
-- **Minimal Setup**: 4GB (base models only)
-- **Professional Setup**: 18GB (base + sdxl)
-- **Cutting-Edge Setup**: 33GB (base + flux)
-- **Complete Setup**: 62GB+ (all models)
-
-*Note: The DGX Spark's 128GB unified memory can easily handle multiple large models simultaneously, enabling complex workflows that would require model swapping on traditional systems.*
 
 ## Quick Start
 
@@ -116,51 +78,6 @@ cd imagegen
 - **Storage**: 100-500GB for models and generated content
 - **Network**: High-speed connection for model downloads
 
-## What You'll Get
-
-After setup, you'll have:
-- 🎨 **Professional image generation studio** with ComfyUI visual interface
-- 🎬 **Video creation capabilities** for motion graphics and animation
-- 🖼️ **Image enhancement tools** for photo restoration and upscaling
-- 🎯 **Precise control systems** with ControlNet for consistent artistic output
-- 🔄 **Workflow automation** with ComfyUI's node-based visual system
-- 📁 **Organized model management** with easy installation and updates
-- ⚙️ **Production-ready deployment** with daemon mode and logging
-
-## Use Cases
-
-### Creative Projects
-- **Concept art and illustration** for games and media
-- **Marketing materials** and social media content
-- **Product visualization** and mockups
-- **Artistic exploration** and style development
-
-### Professional Applications
-- **Photo restoration** and enhancement services
-- **Content creation** for digital marketing
-- **Video production** with AI-assisted workflows
-- **Prototyping** visual concepts and designs
-
-### Educational and Research
-- **AI art education** and experimentation
-- **Computer vision research** with generative models
-- **Creative coding** and algorithmic art
-- **Style transfer studies** and artistic analysis
-
-## DGX Spark Advantages
-
-### Unified Memory Benefits
-- **Load multiple large models** simultaneously without swapping
-- **Real-time preview** of high-resolution generations
-- **Batch processing** of multiple images efficiently
-- **Complex workflows** with multiple AI models in sequence
-
-### Performance Advantages
-- **Faster generation times** with optimized memory access
-- **Higher resolution outputs** without memory constraints
-- **Smooth real-time interaction** in ComfyUI interface
-- **Efficient model switching** between different generators
-
 ## Sample Workflows
 
 ### Image Generation Pipeline
@@ -182,113 +99,44 @@ Content Image + Style Reference → ControlNet → Style Transfer → Output Ima
 
 The `models.sh` script provides comprehensive model management:
 
-```bash
-# Installation commands
-./models.sh install base       # Essential starter models (SD 1.5, VAE, upscaler)
-./models.sh install sdxl       # Stable Diffusion XL models
-./models.sh install controlnet # ControlNet guidance models
-./models.sh install video      # Video generation models
-./models.sh install upscale    # Additional upscaling models
-./models.sh install all        # Everything (requires 200+ GB storage)
-
-# Management commands
-./models.sh list              # Show installed models by category
-./models.sh usage             # Display storage usage
-./models.sh remove            # Interactive removal tool
-./models.sh update            # Update existing models
-```
+| Description | Command |
+|-------------|---------|
+| Essential starter models (SD 1.5, VAE, upscaler) | `./models.sh install base` |
+| Stable Diffusion XL models | `./models.sh install sdxl` |
+| ControlNet guidance models | `./models.sh install controlnet` |
+| Video generation models | `./models.sh install video` |
+| Additional upscaling models | `./models.sh install upscale` |
+| Everything (requires 200+ GB storage) | `./models.sh install all` |
+| Show installed models by category | `./models.sh list` |
+| Display storage usage | `./models.sh usage` |
+| Interactive removal tool | `./models.sh remove` |
+| Update existing models | `./models.sh update` |
 
 ## Advanced Usage
 
 ### ComfyUI Daemon Management
+| Description | Command |
+|-------------|---------|
+| Start as daemon with logging | `./start.sh --daemon --log comfyui.log` |
+| Check daemon status | `./start.sh --status` |
+| Stop daemon | `./start.sh --stop` |
+| Restart daemon | `./start.sh --restart` |
+| Custom port and host | `./start.sh --port 8080 --host 192.168.1.100` |
 
-```bash
-# Start as daemon with logging
-./start.sh --daemon --log comfyui.log
-
-# Check daemon status
-./start.sh --status
-
-# Stop daemon
-./start.sh --stop
-
-# Restart daemon
-./start.sh --restart
-
-# Custom port and host
-./start.sh --port 8080 --host 192.168.1.100
-```
-
-### Performance Optimization
-
-The setup automatically optimizes for DGX Spark:
-
-- **FP16 Precision**: Memory-efficient inference by default
-- **Unified Memory**: Leverages 128GB for large model combinations
-- **CUDA 13.0**: Native support for Grace Blackwell architecture
-- **ARM64 Optimization**: Native ARM64 PyTorch installation
 
 ### Memory Configuration
 
 For different workloads, you can adjust settings:
 
-```bash
-# High VRAM mode (default for DGX Spark)
-./start.sh --high-vram
-
-# Low VRAM mode (if needed)
-./start.sh --low-vram
-
-# CPU mode (not recommended)
-./start.sh --cpu
-
-# Force FP32 (uses more memory)
-./start.sh --fp32
-```
+| Description | Command |
+|-------------|---------|
+| High VRAM mode (default for DGX Spark) | `./start.sh --high-vram` |
+| Low VRAM mode (if needed) | `./start.sh --low-vram` |
+| CPU mode (not recommended) | `./start.sh --cpu` |
+| Force FP32 (uses more memory) | `./start.sh --fp32` |
 
 ## Troubleshooting
 
-### Common Issues
+TBD
 
-1. **CUDA not found**: Ensure CUDA 13.0 is installed via setup
-2. **Out of memory**: Use `--low-vram` flag or smaller models
-3. **Model not loading**: Check model file integrity with `./models.sh list`
-4. **Slow generation**: Verify GPU is being used in ComfyUI settings
-
-### Getting Help
-
-- Check ComfyUI logs when running in daemon mode
-- Use `./start.sh --status` to verify service status
-- Monitor storage with `./models.sh usage`
-- Verify CUDA with `nvidia-smi` command
-
-## Development and Customization
-
-### Custom Workflows
-
-ComfyUI supports custom workflows through:
-- **Node-based interface**: Drag and drop workflow creation
-- **Custom nodes**: Install extensions via ComfyUI Manager
-- **API mode**: Programmatic workflow execution
-- **Batch processing**: Automated generation pipelines
-
-### Extension Management
-
-The setup includes ComfyUI Manager for easy extension installation:
-1. Access ComfyUI web interface
-2. Click "Manager" button
-3. Browse and install custom nodes
-4. Restart ComfyUI to activate new extensions
-
----
-
-**Status: ✅ Ready to Use**
-
-This implementation is complete and production-ready, featuring:
-- Native ARM64 optimization for DGX Spark
-- Grace Blackwell memory utilization
-- Professional workflow templates
-- High-performance generation pipelines
-
-**Get started now**: Run `./setup.sh` to begin your creative AI journey on DGX Spark!
 
