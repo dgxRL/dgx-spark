@@ -35,7 +35,7 @@ Nanochat is a complete implementation for training Large Language Models from sc
 - Complete understanding of **modern LLM training pipeline**
 - A model that's **fully yours** - no API dependencies
 
-
+---
 
 ### [🗣️ LLM - Run Large Language Models](./llm/README.md)
 
@@ -49,7 +49,7 @@ The large memory footprint of the DGX Spark means that you can run large LLMs th
 - Web-based chatbot for user-friendly conversations
 - Optimized for DGX Spark's 128GB unified memory
 
-
+---
 
 ### [🎨 ImageGen - Generate High-Quality Images](./imagegen/README.md)
 
@@ -64,6 +64,7 @@ This project helps you set up the DGX Spark to run high-fidelity open source mod
 - ComfyUI workflow management
 - GPU-accelerated processing
 
+---
 
 ## Contributing
 
