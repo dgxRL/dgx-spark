@@ -2,7 +2,9 @@
 
 # This script starts a chat session with your trained Nanochat model on Nvidia DGX Spark.
 # It sets up all necessary environment variables and launches the web interface.
-
+#
+# # Credit: Andrej Karpathy - https://github.com/karpathy/nanochat
+# 
 # Check if we're in the nanochat directory
 if [ ! -f "pyproject.toml" ] || [ ! -d ".venv" ]; then
     echo "Error: This script must be run from the nanochat directory."

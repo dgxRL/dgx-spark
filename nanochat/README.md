@@ -145,6 +145,11 @@ The script integrates with Weights & Biases for experiment tracking. After runni
 - Re-run `uv sync` if ARM64 packages are missing
 - Verify Rust/Cargo installation for ARM architecture
 
+## Credits and Thanks
+
+ * Andrej Karpathy for Nanochat - https://github.com/karpathy/nanochat
+ * Alexander Falk for the Fix for DGX Spark - https://github.com/karpathy/nanochat/discussions/28#discussioncomment-14756733
+
 ---
 
 "The best way to predict the future is to build it yourself."

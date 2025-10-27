@@ -3,6 +3,8 @@
 # This script prepares the dataset and tokenizer for training the Nanochat model.
 # It assumes that the environment has already been set up using setup.sh.
 #
+# Credit: Andrej Karpathy - https://github.com/karpathy/nanochat
+#
 # Author: Jason Cox
 # Date: 2025-10-25
 # https://github.com/jasonacox/dgx-spark
@@ -25,6 +27,7 @@ else
 fi
 
 # Update requirements and switch to CUDA 13.0 - pyproject.toml
+# Credit: Alexander Falk - https://github.com/karpathy/nanochat/discussions/28#discussioncomment-14756733
 echo "Update pyproject.toml for CUDA 13.0 compatibility..."
 sed -i 's/"torch>=2.8.0"/"torch>=2.9.0"/g' pyproject.toml
 sed -i '/tiktoken>=0.11.0/a\    "triton>=3.5.0",' pyproject.toml
