@@ -19,15 +19,14 @@ The DGX Spark's large memory footprint makes it perfect for running large langua
 
 ## Supported Models
 
-### Large Models (70B+ parameters)
-- **Llama 2 70B**: Meta's flagship conversational AI model
-- **Code Llama 70B**: Specialized for code generation and programming
-- **Mixtral 8x7B**: Mixture of experts model with excellent performance
-
-### Medium Models (7B-30B parameters)
-- **Llama 2 13B**: Balanced performance and efficiency
-- **Mistral 7B**: High-quality general purpose model
-- **CodeLlama 13B**: Code-focused model for development tasks
+| Model | Parameters | Specialization | Description |
+|-------|------------|----------------|-------------|
+| **Llama 2 70B** | 70B+ | Conversational AI | Meta's flagship conversational AI model |
+| **Code Llama 70B** | 70B+ | Code Generation | Specialized for code generation and programming |
+| **Mixtral 8x7B** | 70B+ | General Purpose | Mixture of experts model with excellent performance |
+| **Llama 2 13B** | 7B-30B | Balanced | Balanced performance and efficiency |
+| **Mistral 7B** | 7B-30B | General Purpose | High-quality general purpose model |
+| **CodeLlama 13B** | 7B-30B | Development | Code-focused model for development tasks |
 
 ## Quick Start
 
@@ -45,15 +44,6 @@ cd llm
 - **OS**: Ubuntu 24.04 ARM64
 - **Storage**: 50-200GB depending on model size
 - **Network**: High-speed connection for model downloads
-
-## What You'll Get
-
-After setup, you'll have:
-- 🤖 **Production-ready LLM deployment** optimized for DGX Spark
-- 💬 **Multiple interaction methods** (CLI, web interface, API)
-- ⚡ **High-performance inference** using unified memory architecture
-- 🔧 **Easy model switching** between different LLMs
-- 📊 **Performance monitoring** and optimization tools
 
 ## Usage Examples
 
@@ -85,23 +75,6 @@ After setup, you'll have:
 ./models.sh optimize llama2   # Optimize model for DGX Spark
 ```
 
-## Performance
-
-The DGX Spark's unified memory architecture provides significant advantages:
-
-- **No memory transfers**: Direct GPU access to full 128GB
-- **Larger context windows**: Support for longer conversations
-- **Faster inference**: Reduced latency from unified architecture
-- **Better throughput**: Single GPU eliminates distributed overhead
-
-## Getting Started
-
-1. **Prerequisites**: Ensure your DGX Spark is set up with CUDA 13.0
-2. **Setup**: Run `./setup.sh` to configure the environment
-3. **Choose Model**: Select based on your use case and memory requirements
-4. **Deploy**: Use `./deploy.sh` to download and configure your chosen model
-5. **Chat**: Start interacting with `./chat.sh` or `./web.sh`
-
 ## Coming Soon
 
 - 🔄 **Model fine-tuning** tools for custom domains
@@ -113,15 +86,3 @@ The DGX Spark's unified memory architecture provides significant advantages:
 ---
 
 **Note**: This project is currently under development. Check back soon for the complete implementation optimized for DGX Spark's Grace Blackwell architecture.
-
-## Status: 🚧 Coming Soon
-
-This project is in active development. The implementation will focus on:
-- Native ARM64 optimization
-- Grace Blackwell memory architecture utilization
-- Simple deployment and management tools
-- Production-ready inference servers
-
-**Estimated availability**: Q4 2025
-
-**Follow development**: Watch this repository for updates and early access releases.
