@@ -148,7 +148,7 @@ The script integrates with Weights & Biases for experiment tracking. After runni
 ## Credits and Thanks
 
  * Andrej Karpathy for Nanochat - https://github.com/karpathy/nanochat
- * Alexander Falk for the Fix for DGX Spark - https://github.com/karpathy/nanochat/discussions/28#discussioncomment-14756733
+ * Alexander Falk for the Fix for DGX Spark - https://github.com/karpathy/nanochat/discussions/28#discussioncomment-14756733 and https://forums.developer.nvidia.com/t/anyone-got-nanochat-training-working-on-the-dgx-spark/348537/8 
 
 ---
 
