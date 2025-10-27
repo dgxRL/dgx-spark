@@ -5,6 +5,8 @@
 # builds the tokenizer, downloads the dataset, and prepares everything for training.
 # Use pretrain.sh to start the actual training process.
 #
+# Credit: Alexander Falk - https://github.com/karpathy/nanochat/discussions/28#discussioncomment-14756733
+#
 # Author: Jason Cox
 # Date: 2025-10-25
 # https://github.com/jasonacox/dgx-spark
