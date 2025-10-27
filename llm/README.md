@@ -24,9 +24,9 @@ The DGX Spark's large memory footprint makes it perfect for running large langua
 | **Llama 2 70B** | 70B+ | Conversational AI | Meta's flagship conversational AI model |
 | **Code Llama 70B** | 70B+ | Code Generation | Specialized for code generation and programming |
 | **Mixtral 8x7B** | 70B+ | General Purpose | Mixture of experts model with excellent performance |
-| **Llama 2 13B** | 7B-30B | Balanced | Balanced performance and efficiency |
-| **Mistral 7B** | 7B-30B | General Purpose | High-quality general purpose model |
-| **CodeLlama 13B** | 7B-30B | Development | Code-focused model for development tasks |
+| **Llama 2 Vision 13B** | 13B | Balanced | Balanced performance and efficiency |
+| **Mistral 7B** | 7B | General Purpose | High-quality general purpose model |
+| **CodeLlama 13B** | 13B | Development | Code-focused model for development tasks |
 
 ## Quick Start
 
