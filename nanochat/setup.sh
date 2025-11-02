@@ -45,25 +45,6 @@ echo "CUDA Toolkit installation and environment setup complete."
 nvcc --version
 nvidia-smi
 
-# Create Python virtual environment for project isolation
-echo ""
-echo "Setting up Python virtual environment..."
-if [ ! -d ".venv" ]; then
-    python3 -m venv .venv
-    echo "✓ Virtual environment created"
-else
-    echo "✓ Virtual environment already exists"
-fi
-
-# Activate virtual environment for this session
-source .venv/bin/activate
-echo "✓ Virtual environment activated"
-
-# Upgrade pip and install build tools
-echo ""
-echo "Upgrading pip and installing build tools..."
-pip install --upgrade pip setuptools wheel
-
 echo ""
 echo "Setup complete! Environment is ready for preparing the dataset and tokenizer."
 echo ""
