@@ -56,7 +56,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Set optimized settings for DGX Spark GB10
-export PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:512
+export PYTORCH_ALLOC_CONF=max_split_size_mb:512
 export CUDA_LAUNCH_BLOCKING=0
 
 echo "Starting pretraining on DGX Spark Grace Blackwell GB10..."
@@ -70,7 +70,7 @@ echo ""
 # Run pretraining with DGX Spark optimized settings
 torchrun --standalone --nproc_per_node=1 -m scripts.base_train -- \
     --depth=20 \
-    --run="nanochat-dgx-spark" \
+    --run="nanochat-pretrain" \
     --device_batch_size=32 \
     --sample_every=100
 

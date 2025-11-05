@@ -11,6 +11,7 @@
 # https://github.com/jasonacox/dgx-spark
 
 # Check if we're in the nanochat directory
+cd nanochat
 if [ ! -f "pyproject.toml" ] || [ ! -d ".venv" ]; then
     echo "Error: This script must be run from the nanochat directory."
     echo "Make sure you've run setup.sh first and are in the nanochat folder."
@@ -56,8 +57,15 @@ if [ $? -ne 0 ]; then
 fi
 
 # Set optimized settings for DGX Spark GB10
-export PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:512
+export PYTORCH_ALLOC_CONF=max_split_size_mb:512
 export CUDA_LAUNCH_BLOCKING=0
+
+# Download identity conversations file if it doesn't exist
+if [ ! -f "$HOME/.cache/nanochat/identity_conversations.jsonl" ]; then
+    echo "Downloading identity conversations dataset..."
+    mkdir -p "$HOME/.cache/nanochat"
+    curl -L -o "$HOME/.cache/nanochat/identity_conversations.jsonl" https://karpathy-public.s3.us-west-2.amazonaws.com/identity_conversations.jsonl
+fi
 
 echo "Starting midtraining (fine-tuning) on DGX Spark Grace Blackwell GB10..."
 echo "Configuration:"
@@ -67,7 +75,7 @@ echo "  - Using unified memory architecture"
 echo ""
 
 # Run midtraining with DGX Spark optimized settings
-torchrun --standalone --nproc_per_node=1 -m scripts.mid_train
+torchrun --standalone --nproc_per_node=1 -m scripts.mid_train -- --run="nanochat-midtrain" 
 
 echo ""
 echo "Midtraining complete!"

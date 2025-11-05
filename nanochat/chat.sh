@@ -6,6 +6,7 @@
 # # Credit: Andrej Karpathy - https://github.com/karpathy/nanochat
 # 
 # Check if we're in the nanochat directory
+cd nanochat
 if [ ! -f "pyproject.toml" ] || [ ! -d ".venv" ]; then
     echo "Error: This script must be run from the nanochat directory."
     echo "Make sure you've run setup.sh first and are in the nanochat folder."
@@ -43,7 +44,7 @@ if [ ! -d "$HOME/.cache/nanochat/mid_checkpoints" ] && [ ! -d "$HOME/.cache/nano
 fi
 
 # Set optimized settings for DGX Spark GB10
-export PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:512
+export PYTORCH_ALLOC_CONF=max_split_size_mb:512
 export CUDA_LAUNCH_BLOCKING=0
 
 echo ""

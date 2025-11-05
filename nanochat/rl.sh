@@ -48,7 +48,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Set optimized settings for DGX Spark GB10
-export PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:512
+export PYTORCH_ALLOC_CONF=max_split_size_mb:512
 export CUDA_LAUNCH_BLOCKING=0
 
 echo "Starting Reinforcement Learning (RL) training on DGX Spark Grace Blackwell GB10..."

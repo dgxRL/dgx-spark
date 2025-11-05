@@ -39,8 +39,9 @@ sed -i 's|# target torch to cuda 12.8 or CPU|# target torch to cuda 13.0 or CPU|
 command -v uv &> /dev/null || curl -LsSf https://astral.sh/uv/install.sh | sh
 # create a .venv local virtual environment (if it doesn't exist)
 [ -d ".venv" ] || uv venv
-# install the repo dependencies
-uv sync
+# install the repo dependencies with GPU support (CUDA 13.0)
+echo "Installing dependencies with CUDA 13.0 support..."
+uv sync --extra gpu
 # activate venv so that `python` uses the project's venv instead of system python
 source .venv/bin/activate
 
