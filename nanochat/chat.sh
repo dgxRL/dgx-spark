@@ -37,10 +37,24 @@ fi
 
 # Check for trained models
 echo "Checking for trained models..."
-if [ ! -d "$HOME/.cache/nanochat/mid_checkpoints" ] && [ ! -d "$HOME/.cache/nanochat/base_checkpoints" ]; then
-    echo "Warning: No trained models found."
-    echo "Make sure you've completed pretraining (./pretrain.sh) and optionally midtraining (./midtrain.sh)."
-    echo "Continuing anyway - the web interface will use the most recent available model."
+MODEL_SOURCE=""
+if [ -d "$HOME/.cache/nanochat/rl_checkpoints" ]; then
+    MODEL_SOURCE="rl"
+    echo "Found RL (Reinforcement Learning) checkpoints - using most advanced model"
+elif [ -d "$HOME/.cache/nanochat/sft_checkpoints" ]; then
+    MODEL_SOURCE="sft"
+    echo "Found SFT (Supervised Fine-tuning) checkpoints"
+elif [ -d "$HOME/.cache/nanochat/mid_checkpoints" ]; then
+    MODEL_SOURCE="mid"
+    echo "Found midtraining checkpoints"
+elif [ -d "$HOME/.cache/nanochat/base_checkpoints" ]; then
+    MODEL_SOURCE="base"
+    echo "Found base pretraining checkpoints"
+else
+    echo "Error: No trained models found."
+    echo "Please complete at least pretraining first:"
+    echo "  ./pretrain.sh"
+    exit 1
 fi
 
 # Set optimized settings for DGX Spark GB10
@@ -71,8 +85,8 @@ echo "  ⚠️  Have limitations compared to large commercial models"
 echo ""
 echo "Starting web server..."
 
-# Launch the chat web interface
-python -m scripts.chat_web
+# Launch the chat web interface with the appropriate model source
+python -m scripts.chat_web --source "$MODEL_SOURCE"
 
 echo ""
 echo "Chat session ended."
