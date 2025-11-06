@@ -56,18 +56,16 @@ Where `<|example|>` represents special tokens, following the format of OpenAI sp
 Once midtraining completes, you can chat with your model through a **ChatGPT-like interface**:
 
 ```bash
-# Simple script with environment setup
+# Web-based interface (recommended)
 ./chat.sh
 
-# Alternative manual methods:
-# Command Line interface
-python -m scripts.chat_cli
-
-# Web-based interface
-python -m scripts.chat_web
+# Command-line interface
+./chat_cli.sh
 ```
 
 **For web interface**: Visit the displayed URL (e.g., `http://your-server-ip:8000/`)
+
+Both scripts automatically detect and use your most advanced trained model (RL > SFT > Mid > Base).
 
 ## Supervised Finetuning (SFT)
 
