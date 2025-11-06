@@ -108,6 +108,12 @@ python upload_to_hf.py --username your-hf-username
 
 This will organize your checkpoints, create model cards, and upload them to HuggingFace. See [HUGGINGFACE_UPLOAD.md](HUGGINGFACE_UPLOAD.md) for detailed instructions.
 
+Example Models:
+
+* https://huggingface.co/jasonacox/nanochat-1.8B-pretrain
+* https://huggingface.co/jasonacox/nanochat-1.8B-midtrain
+* https://huggingface.co/jasonacox/nanochat-1.8B-sft
+
 ---
 
 ## System Requirements
