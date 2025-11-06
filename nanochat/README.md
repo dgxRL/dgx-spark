@@ -89,6 +89,25 @@ You have completed the training of your model! You may now go back to the [Chat 
 
 _These micro models are intentionally smaller than modern LLMs like GPT-4. They may make mistakes, are somewhat naive, and hallucinate - "a bit like children" as Karpathy describes. But they're **fully yours** and perfectly matched to the DGX Spark's capabilities._
 
+## Sharing Your Model
+
+Once training is complete, you can share your model on HuggingFace Hub:
+
+```bash
+# 1. Prepare models for upload
+./hf_prepare.sh --author your-hf-username
+
+# 2. Install HuggingFace CLI and login
+pip install huggingface_hub
+huggingface-cli login
+
+# 3. Upload to HuggingFace (dry run first to preview)
+python upload_to_hf.py --username your-hf-username --dry-run
+python upload_to_hf.py --username your-hf-username
+```
+
+This will organize your checkpoints, create model cards, and upload them to HuggingFace. See [HUGGINGFACE_UPLOAD.md](HUGGINGFACE_UPLOAD.md) for detailed instructions.
+
 ---
 
 ## System Requirements

@@ -11,6 +11,7 @@
 # https://github.com/jasonacox/dgx-spark
 
 # Check if we're in the nanochat directory
+cd nanochat
 if [ ! -f "pyproject.toml" ] || [ ! -d ".venv" ]; then
     echo "Error: This script must be run from the nanochat directory."
     echo "Make sure you've run setup.sh first and are in the nanochat folder."
