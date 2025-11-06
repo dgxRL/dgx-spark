@@ -164,40 +164,78 @@ ${description}
 git clone https://github.com/karpathy/nanochat.git
 cd nanochat
 
-# Install dependencies
+# Install dependencies (requires CUDA)
 uv sync --extra gpu
+
+# Activate the virtual environment
+source .venv/bin/activate
 \`\`\`
 
-### Loading the Model
+### Quick Test
+
+Download and test this model from HuggingFace:
+
+\`\`\`bash
+# Clone the test script
+wget https://raw.githubusercontent.com/jasonacox/dgx-spark/main/nanochat/hf_test.py
+
+# Install dependencies
+pip install huggingface_hub
+
+# Run with this model
+python hf_test.py --model ${AUTHOR_NAME}/${MODEL_NAME}-${phase}
+\`\`\`
+
+### Example Code
 
 \`\`\`python
-from nanochat.checkpoint_manager import load_model_from_dir
+import sys
+import os
+import glob
+from huggingface_hub import snapshot_download
 import torch
+from contextlib import nullcontext
 
-# Load model
-model, tokenizer, meta = load_model_from_dir(
-    "path/to/model/directory",
-    device="cuda",
-    phase="eval"
+# Download model from HuggingFace
+print("Downloading model...")
+model_path = snapshot_download(
+    repo_id="${AUTHOR_NAME}/${MODEL_NAME}-${phase}",
+    cache_dir=os.path.expanduser("~/.cache/nanochat/hf_downloads")
 )
 
-# Generate text
+# Setup NanoChat (clone if needed)
+nanochat_path = "nanochat"
+if not os.path.exists(nanochat_path):
+    os.system("git clone https://github.com/karpathy/nanochat.git")
+    os.system("cd nanochat && uv sync --extra gpu")
+
+sys.path.insert(0, nanochat_path)
+
+from nanochat.checkpoint_manager import build_model
+from nanochat.common import compute_init, autodetect_device_type
+from nanochat.engine import Engine
+
+# Initialize
+device_type = autodetect_device_type()
+_, _, _, _, device = compute_init(device_type)
+ptdtype = torch.bfloat16
+autocast_ctx = torch.amp.autocast(device_type=device_type, dtype=ptdtype) if device_type == "cuda" else nullcontext()
+
+# Load model
+checkpoint_files = glob.glob(os.path.join(model_path, "model_*.pt"))
+step = int(os.path.basename(checkpoint_files[0]).split("_")[-1].split(".")[0])
+model, tokenizer, _ = build_model(model_path, step, device, phase="eval")
+engine = Engine(model, tokenizer)
+
+# Generate
 prompt = "Hello, how are you?"
 tokens = tokenizer.encode(prompt)
-tokens = torch.tensor(tokens, dtype=torch.long).unsqueeze(0).to("cuda")
+print(f"Prompt: {prompt}\\nResponse: ", end="", flush=True)
 
-# Generate response
-with torch.no_grad():
-    generated = model.generate(
-        tokens,
-        max_new_tokens=100,
-        temperature=0.8,
-        top_k=50
-    )
-
-# Decode and print
-response = tokenizer.decode(generated[0].tolist())
-print(response)
+with autocast_ctx:
+    for token_column, _ in engine.generate(tokens, num_samples=1, max_tokens=100, temperature=0.8, top_k=50):
+        print(tokenizer.decode([token_column[0]]), end="", flush=True)
+print()
 \`\`\`
 
 ## Training Pipeline
@@ -275,10 +313,10 @@ prepare_model "pretrain" "$HOME/.cache/nanochat/base_checkpoints/d20" \
 prepare_model "midtrain" "$HOME/.cache/nanochat/mid_checkpoints/d20" \
     "Midtrained model fine-tuned for conversational interactions. Trained on SmolTalk dataset with special tokens for multi-turn conversations."
 
-prepare_model "sft" "$HOME/.cache/nanochat/sft_checkpoints/d20" \
+prepare_model "sft" "$HOME/.cache/nanochat/chatsft_checkpoints/d20" \
     "Supervised fine-tuned model with safety training and high-quality conversation data. Optimized for better response quality and safety."
 
-prepare_model "rl" "$HOME/.cache/nanochat/rl_checkpoints/d20" \
+prepare_model "rl" "$HOME/.cache/nanochat/chatrl_checkpoints/d20" \
     "Final model with reinforcement learning (GRPO). Improved performance on math problems and reduced hallucinations."
 
 # Create upload instructions
@@ -378,7 +416,12 @@ echo "Models prepared in: $OUTPUT_DIR"
 echo ""
 echo "Next steps:"
 echo "  1. Review the generated README.md files"
-echo "  2. Read $OUTPUT_DIR/UPLOAD_INSTRUCTIONS.md"
-echo "  3. Upload to HuggingFace using one of the methods described"
+echo "  2. Login to HuggingFace: huggingface-cli login"
+echo "  3. Upload models: python upload_to_hf.py --username $AUTHOR_NAME"
+echo ""
+echo "Optional: For dry-run testing, use:"
+echo "  python upload_to_hf.py --username $AUTHOR_NAME --dry-run"
+echo ""
+echo "Alternative methods available in: $OUTPUT_DIR/UPLOAD_INSTRUCTIONS.md"
 echo ""
 echo -e "${GREEN}✓ Ready for upload!${NC}"

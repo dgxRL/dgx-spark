@@ -68,7 +68,7 @@ torchrun --standalone --nproc_per_node=1 -m scripts.chat_eval -- -i sft
 
 echo ""
 echo "Supervised Fine-tuning complete!"
-echo "SFT models can be found in: ~/.cache/nanochat/sft_checkpoints/"
+echo "SFT models can be found in: ~/.cache/nanochat/chatsft_checkpoints/"
 echo ""
 echo "Next step: Run Reinforcement Learning for final optimization!"
 echo "Run: ./rl.sh"

@@ -69,7 +69,7 @@ torchrun --standalone --nproc_per_node=1 -m scripts.chat_eval -- -i rl -a GSM8K
 
 echo ""
 echo "Reinforcement Learning training complete!"
-echo "RL models can be found in: ~/.cache/nanochat/rl_checkpoints/"
+echo "RL models can be found in: ~/.cache/nanochat/chatrl_checkpoints/"
 echo ""
 echo "🎉 Congratulations! Your Nanochat model is fully trained!"
 echo ""
