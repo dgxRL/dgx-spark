@@ -3,11 +3,21 @@
 # This script prepares the dataset and tokenizer for training the Nanochat model.
 # It assumes that the environment has already been set up using setup.sh.
 #
+# Usage:
+#   ./prepare.sh              # Full setup including dataset download
+#   ./prepare.sh --setup-only # Only setup environment, skip dataset download
+#
 # Credit: Andrej Karpathy - https://github.com/karpathy/nanochat
 #
 # Author: Jason Cox
 # Date: 2025-10-25
 # https://github.com/jasonacox/dgx-spark
+
+# Parse command line arguments
+SETUP_ONLY=false
+if [ "$1" == "--setup-only" ]; then
+    SETUP_ONLY=true
+fi
 
 # Check to make sure CUDA 13 is installed
 # look for Build cuda_13.0.r13.0/compiler.36424714_0
@@ -50,6 +60,14 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 source "$HOME/.cargo/env"
 # Build the rustbpe Tokenizer
 uv run maturin develop --release --manifest-path rustbpe/Cargo.toml
+
+# Exit here if --setup-only flag was provided
+if [ "$SETUP_ONLY" = true ]; then
+    echo ""
+    echo "Environment setup complete!"
+    echo ""
+    exit 0
+fi
 
 # Download and prepare the dataset
 python -m nanochat.dataset -n 240

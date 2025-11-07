@@ -7,9 +7,17 @@ This script demonstrates how to:
 - Use the Engine class for efficient text generation
 - Generate responses with proper dtype handling (BFloat16)
 
+Prerequisites:
+    Before running this script, ensure NanoChat is set up:
+    1. Download prepare.sh:
+       wget https://raw.githubusercontent.com/jasonacox/dgx-spark/main/nanochat/prepare.sh
+       chmod +x prepare.sh
+    2. Run prepare.sh with --setup-only to configure NanoChat environment:
+       ./prepare.sh --setup-only
+    3. Activate the virtual environment:
+       source nanochat/.venv/bin/activate
+
 Usage:
-    source nanochat/.venv/bin/activate
-    
     # Load from local hf_models directory:
     python hf_test.py
     python hf_test.py --model hf_models/nanochat-1.8B-midtrain
@@ -22,21 +30,52 @@ Usage:
     python hf_test.py --model jasonacox/nanochat-1.8B-sft --prompt "What is AI?" --max-tokens 200
 
 https://github.com/jasonacox/dgx-spark/
-Date: 2025-11-05
+Date: 2025-11-06
 """
 import sys
 import os
 import glob
 import argparse
 
-# Add the nanochat repo to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'nanochat'))
-
-from nanochat.checkpoint_manager import build_model
-from nanochat.common import compute_init, autodetect_device_type
-from nanochat.engine import Engine
-import torch
-from contextlib import nullcontext
+def check_nanochat_setup(nanochat_path):
+    """Check if NanoChat is properly set up and provide instructions if not"""
+    if not os.path.exists(nanochat_path):
+        print("❌ Error: NanoChat not found")
+        print(f"\nExpected location: {nanochat_path}")
+        print("\nPlease run prepare.sh to set up NanoChat:")
+        print("  wget https://raw.githubusercontent.com/jasonacox/dgx-spark/main/nanochat/prepare.sh")
+        print("  chmod +x prepare.sh")
+        print("  ./prepare.sh --setup-only")
+        print("\nThis will:")
+        print("  1. Clone the NanoChat repository")
+        print("  2. Patch it for DGX Spark (CUDA 13.0) if needed")
+        print("  3. Install all dependencies in a virtual environment")
+        sys.exit(1)
+    
+    # Check if virtual environment exists
+    venv_path = os.path.join(nanochat_path, '.venv')
+    if not os.path.exists(venv_path):
+        print("❌ Error: NanoChat virtual environment not found")
+        print(f"\nExpected location: {venv_path}")
+        print("\nPlease run prepare.sh to set up the environment:")
+        print("  ./prepare.sh --setup-only")
+        print("\nOr manually set up the environment:")
+        print(f"  cd {nanochat_path}")
+        print("  uv venv")
+        print("  uv sync --extra gpu")
+        sys.exit(1)
+    
+    # Check if running inside the virtual environment
+    in_venv = hasattr(sys, 'real_prefix') or (hasattr(sys, 'base_prefix') and sys.base_prefix != sys.prefix)
+    if not in_venv:
+        print("❌ Error: Not running in NanoChat virtual environment")
+        print("\nPlease activate the virtual environment first:")
+        print("  source nanochat/.venv/bin/activate")
+        print("\nThen run this script again.")
+        sys.exit(1)
+    
+    # Add nanochat to Python path
+    sys.path.insert(0, nanochat_path)
 
 def download_from_huggingface(repo_id, cache_dir=None):
     """Download model from HuggingFace Hub"""
@@ -47,7 +86,7 @@ def download_from_huggingface(repo_id, cache_dir=None):
         print("  pip install huggingface_hub")
         sys.exit(1)
     
-    print(f"Downloading model from HuggingFace: {repo_id}")
+    print(f"📥 Downloading model from HuggingFace: {repo_id}")
     
     if cache_dir is None:
         cache_dir = os.path.join(os.path.expanduser("~"), ".cache", "nanochat", "hf_downloads")
@@ -71,14 +110,17 @@ def download_from_huggingface(repo_id, cache_dir=None):
 
 def load_nanochat_model(model_path, device, phase="eval"):
     """Load a NanoChat model from a directory"""
+    # Import here after nanochat is in path and potentially patched
+    from nanochat.checkpoint_manager import build_model
+    
     # Find the checkpoint step from the model file
     checkpoint_files = glob.glob(os.path.join(model_path, "model_*.pt"))
     if not checkpoint_files:
         raise FileNotFoundError(f"No model checkpoint found in {model_path}")
     step = int(os.path.basename(checkpoint_files[0]).split("_")[-1].split(".")[0])
     
-    print(f"Loading model from: {model_path}")
-    print(f"Checkpoint step: {step}")
+    print(f"📂 Loading model from: {model_path}")
+    print(f"   Checkpoint step: {step}")
     
     # Build the model directly from the directory
     model, tokenizer, meta = build_model(model_path, step, device, phase=phase)
@@ -98,7 +140,19 @@ def main():
                         help='Top-k sampling parameter')
     args = parser.parse_args()
     
+    # Check NanoChat setup
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    nanochat_path = os.path.join(script_dir, 'nanochat')
+    check_nanochat_setup(nanochat_path)
+    
+    # Now import after potential patching
+    from nanochat.common import compute_init, autodetect_device_type
+    from nanochat.engine import Engine
+    import torch
+    from contextlib import nullcontext
+    
     # Initialize device
+    print("🔧 Initializing device...")
     device_type = autodetect_device_type()
     ddp, ddp_rank, ddp_local_rank, ddp_world_size, device = compute_init(device_type)
     ptdtype = torch.bfloat16
@@ -118,14 +172,12 @@ def main():
         if os.path.exists(full_path):
             model_path = full_path
         else:
-            print(f"Error: Model path not found: {model_path}")
-            print(f"Tried: {full_path}")
+            print(f"❌ Error: Model path not found: {model_path}")
+            print(f"   Tried: {full_path}")
             sys.exit(1)
     
     # Load the model
-    model, tokenizer, meta = load_nanochat_model(model_path, device, phase="eval")
-
-    # Load the model
+    print("🤖 Loading NanoChat model...")
     model, tokenizer, meta = load_nanochat_model(model_path, device, phase="eval")
 
     # Create Engine for generation
@@ -135,7 +187,9 @@ def main():
     prompt = args.prompt
     tokens = tokenizer.encode(prompt)
 
-    print(f"\nPrompt: {prompt}")
+    print(f"\n{'='*60}")
+    print(f"Prompt: {prompt}")
+    print(f"{'='*60}")
     print(f"Response: ", end="", flush=True)
 
     # Generate response
@@ -152,6 +206,7 @@ def main():
             print(token_text, end="", flush=True)
 
     print()  # New line at the end
+    print(f"{'='*60}\n")
 
 if __name__ == "__main__":
     main()
