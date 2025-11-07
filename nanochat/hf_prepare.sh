@@ -165,10 +165,20 @@ git clone https://github.com/karpathy/nanochat.git
 cd nanochat
 
 # Install dependencies (requires CUDA)
+uv venv
 uv sync --extra gpu
 
 # Activate the virtual environment
 source .venv/bin/activate
+\`\`\`
+
+### Option: DGX Spark Setup
+
+\`\`\`bash
+# Prepare environment and clone NanoChat
+wget https://raw.githubusercontent.com/jasonacox/dgx-spark/main/nanochat/prepare.sh
+chmod +x prepare.sh
+./prepare.sh --setup-only
 \`\`\`
 
 ### Quick Test
@@ -178,6 +188,9 @@ Download and test this model from HuggingFace:
 \`\`\`bash
 # Clone the test script
 wget https://raw.githubusercontent.com/jasonacox/dgx-spark/main/nanochat/hf_test.py
+
+# Set python environment
+source nanochat/.venv/bin/activate
 
 # Install dependencies
 pip install huggingface_hub
