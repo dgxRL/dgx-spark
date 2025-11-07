@@ -38,10 +38,10 @@ fi
 # Check for trained models
 echo "Checking for trained models..."
 MODEL_SOURCE=""
-if [ -d "$HOME/.cache/nanochat/rl_checkpoints" ]; then
+if [ -d "$HOME/.cache/nanochat/chatrl_checkpoints" ]; then
     MODEL_SOURCE="rl"
     echo "Found RL (Reinforcement Learning) checkpoints - using most advanced model"
-elif [ -d "$HOME/.cache/nanochat/sft_checkpoints" ]; then
+elif [ -d "$HOME/.cache/nanochat/chatsft_checkpoints" ]; then
     MODEL_SOURCE="sft"
     echo "Found SFT (Supervised Fine-tuning) checkpoints"
 elif [ -d "$HOME/.cache/nanochat/mid_checkpoints" ]; then
@@ -64,7 +64,7 @@ export CUDA_LAUNCH_BLOCKING=0
 echo ""
 echo "Starting Nanochat web interface on DGX Spark..."
 echo ""
-echo "🤖 Your personal ChatGPT-like AI is starting up!"
+echo "🤖 Your personal chatbot is starting up!"
 echo ""
 echo "Features of your trained model:"
 echo "  ✅ 1.9B parameters trained from scratch"
