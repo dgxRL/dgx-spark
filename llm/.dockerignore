@@ -1,0 +1,38 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info
+dist
+build
+.venv
+venv
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Cache
+.cache
+*.log
+
+# Documentation
+README.md
+*.md
+
+# Scripts (not needed in image)
+build.sh
+run.sh
+test_api.py
+chat.py
+web_chat.py
