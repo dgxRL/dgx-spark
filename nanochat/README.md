@@ -35,17 +35,39 @@ Once this completes, the base model will be able to generate tokens based on inp
 
 ## Midtraining
 
-Next up is midtraining. This stage will fine-tune the model based on [smol-SmolTalk](https://huggingface.co/datasets/HuggingFaceTB/smol-smoltalk). The training process will be the same as pretraining, but the dataset now becomes conversations, and the model adapts itself to the new special tokens that structure multi-turn conversation objects. Each conversation now looks something like this, loosely following the [OpenAI Harmony chat format](https://github.com/openai/harmony):
+Next up is midtraining. This stage fine-tunes the model on conversational data, teaching it to engage in multi-turn dialogues. The training uses several datasets including [smol-SmolTalk](https://huggingface.co/datasets/HuggingFaceTB/smol-smoltalk), MMLU, GSM8K, and custom identity conversations.
+
+**Data Format**: Conversations are stored in JSONL files, where each line contains a JSON object with a `messages` array following the OpenAI chat format:
+
+```json
+{
+  "messages": [
+    {"role": "user", "content": "What is the color of the sky?"},
+    {"role": "assistant", "content": "The sky is typically blue during the day."},
+    {"role": "user", "content": "Why is it blue?"},
+    {"role": "assistant", "content": "The sky appears blue due to Rayleigh scattering..."}
+  ]
+}
+```
+
+The tokenizer converts these conversations into a token sequence with special tokens:
 
 ```
 <|bos|>
 <|user_start|>What is the color of the sky?<|user_end|>
-<|assistant_start|>Red. Wait, possibly blue. I'm not sure.<|assistant_end|>
-<|user_start|>lol<|user_end|>
-<|assistant_start|>...etcetc
+<|assistant_start|>The sky is typically blue during the day.<|assistant_end|>
+<|user_start|>Why is it blue?<|user_end|>
+<|assistant_start|>The sky appears blue due to Rayleigh scattering...<|assistant_end|>
 ```
 
-Where `<|example|>` represents special tokens, following the format of OpenAI special tokens. The midtraining stage teaches the model several key capabilities: learning special tokens for multi-turn conversations, adapting from internet document distribution to conversation patterns, and crucially learning to handle multiple choice questions (since small models don't naturally acquire this skill from web data alone). Additionally, the model learns to use tools like Python interpreters through special tokens, enabling it to solve mathematical problems and perform evaluations on common benchmarks like MMLU and GSM8K.
+The midtraining stage teaches the model several key capabilities:
+- **Multi-turn conversations**: Learning special tokens that structure dialogue turns
+- **Distribution shift**: Adapting from internet documents to conversational patterns  
+- **Multiple choice questions**: Handling QA formats (via MMLU dataset)
+- **Tool use**: Using Python interpreters through special tokens for math (via GSM8K dataset)
+- **Identity**: Learning model-specific information from custom identity conversations
+
+You can customize your model's personality by editing `~/.cache/nanochat/identity_conversations.jsonl`. See the included `view_identity_data.py` script to view and manage this data.
 
 ```bash
 ./midtrain.sh
