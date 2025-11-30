@@ -49,6 +49,23 @@ docker run --rm --gpus all nvidia/cuda:12.0.0-base-ubuntu22.04 nvidia-smi
 
 If `nvidia-smi` displays your GPU information, you're ready to proceed.
 
+**Troubleshooting Docker Permission Issues:**
+
+If you get a "permission denied" error when running Docker commands, your user needs to be added to the `docker` group:
+
+```bash
+# Add your user to the docker group
+sudo usermod -aG docker $USER
+
+# Log out and back in for changes to take effect
+# Or run this to apply changes immediately (in current shell only)
+newgrp docker
+
+# Verify it works
+docker run --rm --gpus all nvidia/cuda:12.0.0-base-ubuntu22.04 nvidia-smi
+```
+
+
 ## Quick Start
 
 Get vLLM running in under 5 minutes:

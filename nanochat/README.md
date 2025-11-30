@@ -87,7 +87,21 @@ Once midtraining completes, you can chat with your model through a **ChatGPT-lik
 
 **For web interface**: Visit the displayed URL (e.g., `http://your-server-ip:8000/`)
 
-Both scripts automatically detect and use your most advanced trained model (RL > SFT > Mid > Base).
+Both scripts automatically detect and use your most advanced trained model (RL > SFT > Mid > Base). You can also manually select a specific model version:
+
+```bash
+# Use a specific model
+./chat.sh --source rl    # Use RL model
+./chat.sh --source sft   # Use SFT model
+./chat.sh --source mid   # Use midtrained model
+./chat.sh --source base  # Use base model
+
+# Short form
+./chat.sh -s mid
+
+# Same options available for CLI
+./chat_cli.sh --source sft
+```
 
 ## Supervised Finetuning (SFT)
 

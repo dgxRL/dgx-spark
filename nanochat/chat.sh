@@ -3,8 +3,48 @@
 # This script starts a chat session with your trained Nanochat model on Nvidia DGX Spark.
 # It sets up all necessary environment variables and launches the web interface.
 #
-# # Credit: Andrej Karpathy - https://github.com/karpathy/nanochat
+# Usage:
+#   ./chat.sh              # Auto-detect most advanced model
+#   ./chat.sh --source rl  # Use RL model
+#   ./chat.sh --source sft # Use SFT model
+#   ./chat.sh --source mid # Use midtrain model
+#   ./chat.sh --source base # Use base model
+#
+# Credit: Andrej Karpathy - https://github.com/karpathy/nanochat
 # 
+
+# Parse command line arguments
+SPECIFIED_SOURCE=""
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --source|-s)
+            SPECIFIED_SOURCE="$2"
+            shift 2
+            ;;
+        --help|-h)
+            echo "Usage: $0 [--source MODEL]"
+            echo ""
+            echo "Options:"
+            echo "  --source, -s MODEL   Specify model source: rl, sft, mid, or base"
+            echo "                       (default: auto-detect most advanced)"
+            echo "  --help, -h           Show this help message"
+            echo ""
+            echo "Examples:"
+            echo "  $0                   # Auto-detect most advanced model"
+            echo "  $0 --source rl       # Use RL model"
+            echo "  $0 --source sft      # Use SFT model"
+            echo "  $0 --source mid      # Use midtrain model"
+            echo "  $0 --source base     # Use base pretrain model"
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1"
+            echo "Use --help for usage information"
+            exit 1
+            ;;
+    esac
+done
+
 # Check if we're in the nanochat directory
 cd nanochat
 if [ ! -f "pyproject.toml" ] || [ ! -d ".venv" ]; then
@@ -38,23 +78,72 @@ fi
 # Check for trained models
 echo "Checking for trained models..."
 MODEL_SOURCE=""
-if [ -d "$HOME/.cache/nanochat/chatrl_checkpoints" ]; then
-    MODEL_SOURCE="rl"
-    echo "Found RL (Reinforcement Learning) checkpoints - using most advanced model"
-elif [ -d "$HOME/.cache/nanochat/chatsft_checkpoints" ]; then
-    MODEL_SOURCE="sft"
-    echo "Found SFT (Supervised Fine-tuning) checkpoints"
-elif [ -d "$HOME/.cache/nanochat/mid_checkpoints" ]; then
-    MODEL_SOURCE="mid"
-    echo "Found midtraining checkpoints"
-elif [ -d "$HOME/.cache/nanochat/base_checkpoints" ]; then
-    MODEL_SOURCE="base"
-    echo "Found base pretraining checkpoints"
+
+# If user specified a source, validate and use it
+if [ -n "$SPECIFIED_SOURCE" ]; then
+    case "$SPECIFIED_SOURCE" in
+        rl)
+            if [ -d "$HOME/.cache/nanochat/chatrl_checkpoints" ]; then
+                MODEL_SOURCE="rl"
+                echo "Using specified RL (Reinforcement Learning) model"
+            else
+                echo "Error: RL checkpoints not found at $HOME/.cache/nanochat/chatrl_checkpoints"
+                exit 1
+            fi
+            ;;
+        sft)
+            if [ -d "$HOME/.cache/nanochat/chatsft_checkpoints" ]; then
+                MODEL_SOURCE="sft"
+                echo "Using specified SFT (Supervised Fine-tuning) model"
+            else
+                echo "Error: SFT checkpoints not found at $HOME/.cache/nanochat/chatsft_checkpoints"
+                exit 1
+            fi
+            ;;
+        mid)
+            if [ -d "$HOME/.cache/nanochat/mid_checkpoints" ]; then
+                MODEL_SOURCE="mid"
+                echo "Using specified midtraining model"
+            else
+                echo "Error: Midtraining checkpoints not found at $HOME/.cache/nanochat/mid_checkpoints"
+                exit 1
+            fi
+            ;;
+        base)
+            if [ -d "$HOME/.cache/nanochat/base_checkpoints" ]; then
+                MODEL_SOURCE="base"
+                echo "Using specified base pretraining model"
+            else
+                echo "Error: Base checkpoints not found at $HOME/.cache/nanochat/base_checkpoints"
+                exit 1
+            fi
+            ;;
+        *)
+            echo "Error: Invalid model source '$SPECIFIED_SOURCE'"
+            echo "Valid options: rl, sft, mid, base"
+            exit 1
+            ;;
+    esac
 else
-    echo "Error: No trained models found."
-    echo "Please complete at least pretraining first:"
-    echo "  ./pretrain.sh"
-    exit 1
+    # Auto-detect most advanced model
+    if [ -d "$HOME/.cache/nanochat/chatrl_checkpoints" ]; then
+        MODEL_SOURCE="rl"
+        echo "Auto-detected RL (Reinforcement Learning) checkpoints - using most advanced model"
+    elif [ -d "$HOME/.cache/nanochat/chatsft_checkpoints" ]; then
+        MODEL_SOURCE="sft"
+        echo "Auto-detected SFT (Supervised Fine-tuning) checkpoints"
+    elif [ -d "$HOME/.cache/nanochat/mid_checkpoints" ]; then
+        MODEL_SOURCE="mid"
+        echo "Auto-detected midtraining checkpoints"
+    elif [ -d "$HOME/.cache/nanochat/base_checkpoints" ]; then
+        MODEL_SOURCE="base"
+        echo "Auto-detected base pretraining checkpoints"
+    else
+        echo "Error: No trained models found."
+        echo "Please complete at least pretraining first:"
+        echo "  ./pretrain.sh"
+        exit 1
+    fi
 fi
 
 # Set optimized settings for DGX Spark GB10

@@ -215,3 +215,4 @@ imagegen/input/
 imagegen/ComfyUI/
 hf_models/
 nanochat/cache
+nanochat/nanochat/
