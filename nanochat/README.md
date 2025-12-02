@@ -2,6 +2,11 @@
 
 > "The best ChatGPT that $100 can buy" - Andrej Karpathy
 
+or
+
+> "The best ChatGPT that $8 can buy" - [DGX Spark Costs](https://github.com/jasonacox/dgx-spark/blob/main/nanochat/README.md#costs)
+
+
 This project provides a complete setup for training a Large Language Model (LLM) from scratch using the [Nanochat framework](https://github.com/karpathy/nanochat) created by [Andrej Karpathy](https://github.com/karpathy). This version has been specifically optimized for the **Nvidia DGX Spark** platform. The setup leverages the unique capabilities of the DGX Spark's Grace Blackwell GB10 GPU architecture with 128GB unified memory, making it ideal for training the 1.9B parameter model despite the GB10's moderate compute power.
 
 ## Overview
