@@ -103,6 +103,73 @@ Both scripts automatically detect and use your most advanced trained model (RL >
 ./chat_cli.sh --source sft
 ```
 
+### OpenAI API-Compatible Server
+
+You can also run your nanochat model as an **OpenAI-compatible API service**, allowing you to use it as a drop-in replacement for OpenAI's API:
+
+```bash
+# Start the API service
+./chat_service.sh --source rl --port 8000
+
+# Or with custom settings
+./chat_service.sh --source sft --port 8001 --temperature 0.7 --max-tokens 1024
+```
+
+**API Endpoint**: `http://localhost:8000/v1/chat/completions`
+
+**Use with OpenAI Python SDK**:
+
+```python
+from openai import OpenAI
+
+# Connect to your local nanochat service
+client = OpenAI(
+    api_key="not-needed",
+    base_url="http://localhost:8000/v1"
+)
+
+# Streaming response
+response = client.chat.completions.create(
+    model="nanochat",
+    messages=[
+        {"role": "user", "content": "What is the capital of France?"}
+    ],
+    stream=True
+)
+
+for chunk in response:
+    if chunk.choices[0].delta.content:
+        print(chunk.choices[0].delta.content, end="")
+
+# Non-streaming response
+response = client.chat.completions.create(
+    model="nanochat",
+    messages=[
+        {"role": "user", "content": "Hello!"}
+    ],
+    stream=False
+)
+
+print(response.choices[0].message.content)
+```
+
+**Available Options**:
+- `--source, -s`: Model source (rl|sft|mid|base) - auto-detects if not specified
+- `--port, -p`: Server port (default: 8000)
+- `--temperature, -t`: Default temperature (default: 0.8)
+- `--top-k, -k`: Default top-k sampling (default: 50)
+- `--max-tokens, -m`: Default max tokens (default: 512)
+- `--host`: Bind address (default: 0.0.0.0)
+- `--dtype, -d`: Data type (float32|bfloat16, default: bfloat16)
+
+**API Endpoints**:
+- `POST /v1/chat/completions` - Chat completions (streaming and non-streaming)
+- `GET /v1/models` - List available models
+- `GET /health` - Health check
+- `GET /stats` - Worker statistics
+
+This makes it easy to integrate your nanochat model with existing tools and applications that use the OpenAI API format.
+
 ## Supervised Finetuning (SFT)
 
 Following midtraining is the Supervised Fine-tuning (SFT) stage, which performs additional fine-tuning on curated, high-quality conversations. This introduces safety training. SFT addresses a key domain mismatch by formatting examples to match test-time conditions - stretching and padding data rows individually rather than concatenating them for training efficiency as done in pre/mid-training stages. This formatting alignment provides another performance boost by ensuring the model trains on data that mirrors its actual inference usage patterns.
@@ -203,6 +270,10 @@ The script integrates with Weights & Biases for experiment tracking. After runni
 - Ensure the virtual environment is activated
 - Re-run `uv sync` if ARM64 packages are missing
 - Verify Rust/Cargo installation for ARM architecture
+
+## Costs
+
+Running the DGX Spark locally instead of using a cloud service isn’t just a novelty, it’s surprisingly economical. For my 9-day pretraining run, the system drew about 120 watts, resulting in roughly $8 of electricity usage based on local utility rates. Even when factoring in hardware depreciation, the numbers stay favorable. Assuming a 3–4 year lifespan for the $4,000 Spark, depreciation comes out to about $2.74–$3.65 per day, or $25–$33 for the full run. Altogether, the total cost to train locally was at most about $41, dramatically cheaper than comparable cloud compute.
 
 ## Credits and Thanks
 

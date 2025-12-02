@@ -76,11 +76,25 @@ Get vLLM running in under 5 minutes:
 # Build the Docker image
 ./build.sh
 
-# Run vLLM server with default model
+# Run vLLM server with default model (interactive mode)
 ./run.sh
 
-# Or specify a different model, max length, and port
+# Or specify a different model, max length, and port - examples:
 ./run.sh nvidia/Llama-3.1-8B-Instruct-FP8 8192 8888
+./run.sh Qwen/Qwen3-VL-30B-A3B-Instruct-FP8 32768 8000
+
+# Run as a background daemon server (recommended for production)
+./server.sh start --model meta-llama/Llama-3.1-8B-Instruct
+
+# Examples with custom options:
+./server.sh start --model nvidia/Llama-3.1-8B-Instruct-FP8 --max-len 8192 --port 8888
+./server.sh start --model Qwen/Qwen3-VL-30B-A3B-Instruct-FP8 --max-len 32768
+
+# Manage the server:
+./server.sh status   # Check server status
+./server.sh logs     # View server logs
+./server.sh stop     # Stop the server
+./server.sh restart  # Restart the server
 
 # In another terminal, test the API
 ./test_api.py
