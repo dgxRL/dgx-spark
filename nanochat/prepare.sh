@@ -45,6 +45,13 @@ sed -i 's|pytorch-cu128|pytorch-cu130|g' pyproject.toml
 sed -i 's|cu128|cu130|g' pyproject.toml
 sed -i 's|# target torch to cuda 12.8 or CPU|# target torch to cuda 13.0 or CPU|' pyproject.toml
 
+# Setup CUDA environment variables BEFORE installing PyTorch
+echo "Setting up CUDA 13.0 environment..."
+export TRITON_PTXAS_PATH=/usr/local/cuda-13.0/bin/ptxas
+export CUDA_HOME=/usr/local/cuda-13.0
+export PATH=/usr/local/cuda-13.0/bin:$PATH
+export LD_LIBRARY_PATH=/usr/local/cuda-13.0/lib64:${LD_LIBRARY_PATH}
+
 # install uv (if not already installed)
 if ! command -v uv &> /dev/null; then
     echo "Installing uv package manager..."
