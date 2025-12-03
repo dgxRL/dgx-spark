@@ -4,11 +4,57 @@
 # It sets up all necessary environment variables and activates the virtual environment
 # to ensure training can run even if the user has logged out and back in.
 #
+# Usage:
+#   ./pretrain.sh              # Use default depth of 20 (~1.9B parameters)
+#   ./pretrain.sh --depth 16   # Use custom depth (16 = ~1B parameters)
+#   ./pretrain.sh --depth 24   # Use custom depth (24 = ~2.8B parameters)
+#
 # Credit: Andrej Karpathy - https://github.com/karpathy/nanochat
 #
 # Author: Jason Cox
 # Date: 2025-10-25
 # https://github.com/jasonacox/dgx-spark
+
+# Default configuration
+DEPTH=20
+DEVICE_BATCH_SIZE=32
+
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --depth|-d)
+            DEPTH="$2"
+            shift 2
+            ;;
+        --batch-size|-b)
+            DEVICE_BATCH_SIZE="$2"
+            shift 2
+            ;;
+        --help|-h)
+            echo "Usage: $0 [options]"
+            echo ""
+            echo "Options:"
+            echo "  --depth, -d DEPTH         Model depth (number of layers, default: 20)"
+            echo "                            Depth 16 ≈ 1.0B params, 20 ≈ 1.9B params, 24 ≈ 2.8B params"
+            echo "  --batch-size, -b SIZE     Device batch size (default: 32)"
+            echo "                            Larger values use more memory but may train faster"
+            echo "  --help, -h                Show this help message"
+            echo ""
+            echo "Examples:"
+            echo "  $0                        # Default 20 layers, batch size 32"
+            echo "  $0 --depth 16             # Smaller model (~1.0B parameters)"
+            echo "  $0 --depth 24             # Larger model (~2.8B parameters)"
+            echo "  $0 --batch-size 64        # Larger batch size (more memory)"
+            echo "  $0 -d 20 -b 16            # Custom depth and batch size"
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1"
+            echo "Use --help for usage information"
+            exit 1
+            ;;
+    esac
+done
 
 # Check if we're in the nanochat directory
 if [ ! -f "pyproject.toml" ] || [ ! -d ".venv" ]; then
@@ -61,17 +107,17 @@ export CUDA_LAUNCH_BLOCKING=0
 
 echo "Starting pretraining on DGX Spark Grace Blackwell GB10..."
 echo "Configuration:"
-echo "  - Model depth: 20 layers (~1.9B parameters)"
-echo "  - Device batch size: 32 (optimized for 128GB unified memory)"
+echo "  - Model depth: $DEPTH layers"
+echo "  - Device batch size: $DEVICE_BATCH_SIZE"
 echo "  - Training optimized for single GB10 GPU"
 echo "  - Using unified memory architecture"
 echo ""
 
 # Run pretraining with DGX Spark optimized settings
 torchrun --standalone --nproc_per_node=1 -m scripts.base_train -- \
-    --depth=20 \
+    --depth=$DEPTH \
     --run="nanochat-pretrain" \
-    --device_batch_size=32 \
+    --device_batch_size=$DEVICE_BATCH_SIZE \
     --sample_every=100
 
 echo ""

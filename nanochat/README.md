@@ -37,6 +37,11 @@ To set up the environment and begin training an LLM from scratch, simply run the
 # Run pretraining - It is recommended that you run this in screen or tmux terminal as
 # training can take several days and a disconnect would cause the training to stop.
 ./pretrain.sh
+
+# Optional: Customize model size and batch size
+./pretrain.sh --depth 16 --batch-size 64  # Smaller model, larger batches
+./pretrain.sh --depth 24 --batch-size 16  # Larger model, smaller batches
+# Use --help for all options: ./pretrain.sh --help
 ```
 
 **Note on Experiment Tracking**: The training scripts use [Weights & Biases (wandb)](https://wandb.ai) to track experiments, log metrics, and visualize training progress. During `./prepare.sh`, you'll be prompted to log in. You can:
