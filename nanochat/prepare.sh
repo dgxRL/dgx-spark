@@ -72,6 +72,9 @@ if ! command -v uv &> /dev/null; then
         echo "Added ~/.local/bin to PATH in $SHELL_RC"
         echo "Run 'source $SHELL_RC' or start a new terminal to use uv globally"
     fi
+else
+    # Ensure uv is in PATH even if already installed
+    export PATH="$HOME/.local/bin:$PATH"
 fi
 
 # Check if existing .venv has CPU-only PyTorch
