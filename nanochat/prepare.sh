@@ -45,6 +45,10 @@ sed -i 's|pytorch-cu128|pytorch-cu130|g' pyproject.toml
 sed -i 's|cu128|cu130|g' pyproject.toml
 sed -i 's|# target torch to cuda 12.8 or CPU|# target torch to cuda 13.0 or CPU|' pyproject.toml
 
+# Remove uv.lock to force regeneration with CUDA packages
+echo "Removing uv.lock to force CUDA package resolution..."
+rm -f uv.lock
+
 # Setup CUDA environment variables BEFORE installing PyTorch
 echo "Setting up CUDA 13.0 environment..."
 export TRITON_PTXAS_PATH=/usr/local/cuda-13.0/bin/ptxas
