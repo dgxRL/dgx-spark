@@ -58,6 +58,20 @@ if ! command -v uv &> /dev/null; then
     curl -LsSf https://astral.sh/uv/install.sh | sh
     # Add uv to PATH for current session
     export PATH="$HOME/.local/bin:$PATH"
+    
+    # Add to shell profile for persistence
+    SHELL_RC="$HOME/.bashrc"
+    if [ -n "$ZSH_VERSION" ]; then
+        SHELL_RC="$HOME/.zshrc"
+    fi
+    
+    if ! grep -q '.local/bin' "$SHELL_RC" 2>/dev/null; then
+        echo "" >> "$SHELL_RC"
+        echo '# Added by nanochat prepare.sh' >> "$SHELL_RC"
+        echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$SHELL_RC"
+        echo "Added ~/.local/bin to PATH in $SHELL_RC"
+        echo "Run 'source $SHELL_RC' or start a new terminal to use uv globally"
+    fi
 fi
 
 # Check if existing .venv has CPU-only PyTorch
@@ -83,8 +97,26 @@ echo "Installing wandb for experiment tracking..."
 uv pip install wandb
 
 # Install Rust / Cargo
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-source "$HOME/.cargo/env"
+if ! command -v cargo &> /dev/null; then
+    echo "Installing Rust/Cargo..."
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    source "$HOME/.cargo/env"
+    
+    # Add to shell profile for persistence
+    SHELL_RC="$HOME/.bashrc"
+    if [ -n "$ZSH_VERSION" ]; then
+        SHELL_RC="$HOME/.zshrc"
+    fi
+    
+    if ! grep -q '.cargo/env' "$SHELL_RC" 2>/dev/null; then
+        echo "" >> "$SHELL_RC"
+        echo '# Added by nanochat prepare.sh' >> "$SHELL_RC"
+        echo 'source "$HOME/.cargo/env"' >> "$SHELL_RC"
+        echo "Added Rust/Cargo to PATH in $SHELL_RC"
+    fi
+else
+    source "$HOME/.cargo/env" 2>/dev/null || true
+fi
 # Build the rustbpe Tokenizer
 uv run maturin develop --release --manifest-path rustbpe/Cargo.toml
 
