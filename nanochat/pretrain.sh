@@ -81,6 +81,31 @@ source "$HOME/.cargo/env" 2>/dev/null || true
 echo "Activating Python virtual environment..."
 source .venv/bin/activate
 
+# Verify PyTorch has CUDA support
+echo "Verifying PyTorch CUDA support..."
+TORCH_VERSION=$(python -c "import torch; print(torch.__version__)" 2>/dev/null)
+CUDA_AVAILABLE=$(python -c "import torch; print(torch.cuda.is_available())" 2>/dev/null)
+
+if [[ ! "$TORCH_VERSION" =~ cu130 ]]; then
+    echo "Error: PyTorch is not installed with CUDA 13.0 support."
+    echo "Detected PyTorch version: $TORCH_VERSION"
+    echo ""
+    echo "Please reinstall with CUDA support:"
+    echo "  cd ~/dgx-spark/nanochat"
+    echo "  rm -rf nanochat/.venv nanochat"
+    echo "  ./prepare.sh"
+    exit 1
+fi
+
+if [ "$CUDA_AVAILABLE" != "True" ]; then
+    echo "Error: PyTorch cannot detect CUDA devices."
+    echo "PyTorch version: $TORCH_VERSION"
+    echo "CUDA available: $CUDA_AVAILABLE"
+    exit 1
+fi
+
+echo "PyTorch $TORCH_VERSION with CUDA support verified ✓"
+
 # Verify CUDA installation
 echo "Verifying CUDA installation..."
 nvcc --version
