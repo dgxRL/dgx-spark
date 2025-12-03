@@ -217,3 +217,4 @@ hf_models/
 nanochat/cache
 nanochat/nanochat/
 llm/.gradio
+nanochat/.gradio/certificate.pem

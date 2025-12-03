@@ -49,9 +49,7 @@ To set up the environment and begin training an LLM from scratch, simply run the
 - Press Ctrl+C to skip wandb login - training will continue but without experiment tracking
 - Disable wandb by setting `export WANDB_MODE=offline` before running training scripts
 
-```bash
-
-<img width="1067" height="1099" alt="Screenshot 2025-10-25 at 3 52 46 PM" src="https://github.com/user-attachments/assets/eab9dbbf-e9e1-44c6-a8c1-fbe08e5864db" />
+<img width="1067" height="1099" alt="Screenshot 2025-10-25 at 3 52 46 PM" src="https://github.com/user-attachments/assets/eab9dbbf-e9e1-44c6-a8c1-fbe08e5864db" />
 
 Once this completes, the base model will be able to generate tokens based on input prompts. However, it will not be able to chat properly. That will require introducing a user/assistant chat format, which is done in midtraining.
 
@@ -94,6 +92,31 @@ You can customize your model's personality by editing `~/.cache/nanochat/identit
 ```bash
 ./midtrain.sh
 ```
+
+After midtraining, the model is conversation-aware. You can jump ahead to the [Chat section](#chat) below and interact with your model, or proceed to fine-tuning.
+
+## Supervised Fine-Tuning (SFT)
+
+Following midtraining is the Supervised Fine-Tuning (SFT) stage, which performs additional fine-tuning on curated, high-quality conversations. This introduces safety training. SFT addresses a key domain mismatch by formatting examples to match test-time conditions - stretching and padding data rows individually rather than concatenating them for training efficiency as done in pre/mid-training stages. This formatting alignment provides another performance boost by ensuring the model trains on data that mirrors its actual inference usage patterns.
+
+```bash
+./sft.sh
+```
+
+## Reinforcement Learning (RL)
+
+The final stage is Reinforcement Learning (RL), which provides modest performance gains and helps mitigate issues like hallucinations. Using GSM8K's objective math problem rewards, the model runs a simplified GRPO training loop that samples completions, rewards correct answers, and trains on high-reward responses. This implementation removes complexity like trust regions, PPO ratios, and z-score normalization, resulting in a REINFORCE-like approach that retains group relative advantage calculation from rewards.
+
+```bash
+./rl.sh
+```
+
+## Congratulations!
+
+You have completed the training of your model! You may now go back to the [Chat section](#chat) below and interact with your fully trained model.
+
+_These micro models are intentionally smaller than modern LLMs like GPT-4. They may make mistakes, are somewhat naive, and hallucinate - "a bit like children" as Karpathy describes. But they're **fully yours** and perfectly matched to the DGX Spark's capabilities._
+
 
 ## Chat
 
@@ -192,27 +215,21 @@ print(response.choices[0].message.content)
 
 This makes it easy to integrate your nanochat model with existing tools and applications that use the OpenAI API format.
 
-## Supervised Finetuning (SFT)
+### Gradio Web Chat Interface
 
-Following midtraining is the Supervised Fine-tuning (SFT) stage, which performs additional fine-tuning on curated, high-quality conversations. This introduces safety training. SFT addresses a key domain mismatch by formatting examples to match test-time conditions - stretching and padding data rows individually rather than concatenating them for training efficiency as done in pre/mid-training stages. This formatting alignment provides another performance boost by ensuring the model trains on data that mirrors its actual inference usage patterns.
+Using the chat_service.sh above, you can launch a Gradio web interface via `web_chat.py` to chat with the model over the public internet.
 
-```bash
-./sft.sh
-```
-
-## Reinforcement Learning (RL)
-
-The final stage is Reinforcement Learning (RL), which provides modest performance gains and helps mitigate issues like hallucinations. Using GSM8K's objective math problem rewards, the model runs a simplified GRPO training loop that samples completions, rewards correct answers, and trains on high-reward responses. This implementation removes complexity like trust regions, PPO ratios, and z-score normalization, resulting in a REINFORCE-like approach that retains group relative advantage calculation from rewards.
+<img width="832" height="758" alt="image" src="https://github.com/user-attachments/assets/09f90eff-b0d9-4982-b42b-1e98fffe84b3" />
 
 ```bash
-./rl.sh
+# Make sure chat_service.py is running first
+./chat_service.sh --source sft --port 8000
+
+# In another terminal, start the Gradio interface
+python web_chat.py --share
+
+# It will provide a URL to access the chat interface
 ```
-
-## Congratulations!
-
-You have completed the training of your model! You may now go back to the [Chat section](#chat) above and interact with your fully trained model.
-
-_These micro models are intentionally smaller than modern LLMs like GPT-4. They may make mistakes, are somewhat naive, and hallucinate - "a bit like children" as Karpathy describes. But they're **fully yours** and perfectly matched to the DGX Spark's capabilities._
 
 ## Sharing Your Model
 
@@ -300,7 +317,7 @@ Running the DGX Spark locally instead of using a cloud service isn’t just a no
 ## Credits and Thanks
 
  * Andrej Karpathy for Nanochat - https://github.com/karpathy/nanochat
- * Alexander Falk for the Fix for DGX Spark - https://github.com/karpathy/nanochat/discussions/28#discussioncomment-14756733 and https://forums.developer.nvidia.com/t/anyone-got-nanochat-training-working-on-the-dgx-spark/348537/8 
+ * Alexander Falk for the DGX Spark CUDA 13.0 fix - https://github.com/karpathy/nanochat/discussions/28#discussioncomment-14756733 and https://forums.developer.nvidia.com/t/anyone-got-nanochat-training-working-on-the-dgx-spark/348537/8 
 
 ---
 
