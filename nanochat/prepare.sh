@@ -59,6 +59,17 @@ if ! command -v uv &> /dev/null; then
     # Add uv to PATH for current session
     export PATH="$HOME/.local/bin:$PATH"
 fi
+
+# Check if existing .venv has CPU-only PyTorch
+if [ -d ".venv" ]; then
+    EXISTING_TORCH=$(.venv/bin/python -c "import torch; print(torch.__version__)" 2>/dev/null || echo "none")
+    if [[ "$EXISTING_TORCH" =~ \+cpu ]] || [[ "$EXISTING_TORCH" == "none" ]] || [[ ! "$EXISTING_TORCH" =~ cu130 ]]; then
+        echo "Detected incompatible PyTorch installation (version: $EXISTING_TORCH)"
+        echo "Removing old virtual environment to ensure CUDA 13.0 support..."
+        rm -rf .venv
+    fi
+fi
+
 # create a .venv local virtual environment (if it doesn't exist)
 [ -d ".venv" ] || uv venv
 # install the repo dependencies with GPU support (CUDA 13.0)
