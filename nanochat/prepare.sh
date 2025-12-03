@@ -95,6 +95,18 @@ uv sync --extra gpu
 # activate venv so that `python` uses the project's venv instead of system python
 source .venv/bin/activate
 
+# Verify PyTorch was installed with CUDA support
+INSTALLED_TORCH=$(python -c "import torch; print(torch.__version__)" 2>/dev/null || echo "none")
+if [[ ! "$INSTALLED_TORCH" =~ cu130 ]]; then
+    echo "WARNING: PyTorch $INSTALLED_TORCH does not have CUDA 13.0 support!"
+    echo "Force reinstalling PyTorch with CUDA 13.0..."
+    uv pip uninstall -y torch torchvision torchaudio 2>/dev/null || true
+    uv pip install torch==2.9.1+cu130 --index-url https://download.pytorch.org/whl/cu130
+    # Verify again
+    INSTALLED_TORCH=$(python -c "import torch; print(torch.__version__)" 2>/dev/null)
+    echo "PyTorch version after reinstall: $INSTALLED_TORCH"
+fi
+
 # Install wandb for experiment tracking
 echo "Installing wandb for experiment tracking..."
 uv pip install wandb
