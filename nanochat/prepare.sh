@@ -96,7 +96,7 @@ uv sync --extra gpu
 # Force reinstall PyTorch with CUDA 13.0 from PyTorch index
 # uv sync may install CPU version despite env vars, so we force the CUDA version
 echo "Ensuring PyTorch CUDA 13.0 installation..."
-uv pip install --reinstall --force torch==2.9.1 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu130
+uv pip install --reinstall --force-reinstall torch==2.9.1 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu130
 
 # activate venv so that `python` uses the project's venv instead of system python
 source .venv/bin/activate
