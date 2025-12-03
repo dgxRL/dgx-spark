@@ -29,10 +29,22 @@ To set up the environment and begin training an LLM from scratch, simply run the
 # Download Nanochat and required training data
 ./prepare.sh
 
+# Login to Weights & Biases for experiment tracking (optional but recommended)
+# If you don't have an account, create one at https://wandb.ai
+# You'll be prompted for your API key during prepare.sh
+# To skip wandb tracking, press Ctrl+C when prompted and training will continue without it
+
 # Run pretraining - It is recommended that you run this in screen or tmux terminal as
 # training can take several days and a disconnect would cause the training to stop.
 ./pretrain.sh
 ```
+
+**Note on Experiment Tracking**: The training scripts use [Weights & Biases (wandb)](https://wandb.ai) to track experiments, log metrics, and visualize training progress. During `./prepare.sh`, you'll be prompted to log in. You can:
+- Create a free account at [wandb.ai](https://wandb.ai) and use your API key
+- Press Ctrl+C to skip wandb login - training will continue but without experiment tracking
+- Disable wandb by setting `export WANDB_MODE=offline` before running training scripts
+
+```bash
 
 <img width="1067" height="1099" alt="Screenshot 2025-10-25 at 3 52 46 PM" src="https://github.com/user-attachments/assets/eab9dbbf-e9e1-44c6-a8c1-fbe08e5864db" />
 

@@ -21,6 +21,7 @@ echo ""
 # Model configuration
 MODEL_NAME="nanochat-1.8B"
 AUTHOR_NAME=${HF_USERNAME:-"your-username"}
+AUTHOR_FULL_NAME=${HF_AUTHOR:-"Your Full Name"}
 OUTPUT_DIR="./hf_models"
 
 # Parse command line arguments
@@ -34,6 +35,10 @@ while [[ $# -gt 0 ]]; do
             AUTHOR_NAME="$2"
             shift 2
             ;;
+        --author-name)
+            AUTHOR_FULL_NAME="$2"
+            shift 2
+            ;;
         --output)
             OUTPUT_DIR="$2"
             shift 2
@@ -42,14 +47,19 @@ while [[ $# -gt 0 ]]; do
             echo "Usage: $0 [options]"
             echo ""
             echo "Options:"
-            echo "  --name NAME       Model name (default: nanochat-dgx-spark)"
-            echo "  --author AUTHOR   HuggingFace username (default: your-username)"
-            echo "  --output DIR      Output directory (default: ./hf_models)"
-            echo "  --help            Show this help message"
+            echo "  --name NAME          Model name (default: nanochat-1.8B)"
+            echo "  --author AUTHOR      HuggingFace username (default: your-username)"
+            echo "  --author-name NAME   Full author name for citations (default: Your Full Name)"
+            echo "  --output DIR         Output directory (default: ./hf_models)"
+            echo "  --help               Show this help message"
             echo ""
             echo "Environment variables:"
-            echo "  HF_USERNAME       Your HuggingFace username"
-            echo "  HF_TOKEN          Your HuggingFace API token"
+            echo "  HF_USERNAME          Your HuggingFace username"
+            echo "  HF_AUTHOR            Your full name for citations"
+            echo "  HF_TOKEN             Your HuggingFace API token"
+            echo ""
+            echo "Example:"
+            echo "  $0 --name nanochat-1.8B --author jasonacox --author-name 'Jason A. Cox'"
             exit 0
             ;;
         *)
@@ -271,7 +281,7 @@ This model was trained using the DGX Spark optimized training pipeline:
 
 \`\`\`bibtex
 @misc{${MODEL_NAME},
-  author = {${AUTHOR_NAME}},
+  author = {${AUTHOR_FULL_NAME}},
   title = {${MODEL_NAME}-${phase}},
   year = {2025},
   publisher = {HuggingFace},

@@ -46,7 +46,12 @@ sed -i 's|cu128|cu130|g' pyproject.toml
 sed -i 's|# target torch to cuda 12.8 or CPU|# target torch to cuda 13.0 or CPU|' pyproject.toml
 
 # install uv (if not already installed)
-command -v uv &> /dev/null || curl -LsSf https://astral.sh/uv/install.sh | sh
+if ! command -v uv &> /dev/null; then
+    echo "Installing uv package manager..."
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    # Add uv to PATH for current session
+    export PATH="$HOME/.local/bin:$PATH"
+fi
 # create a .venv local virtual environment (if it doesn't exist)
 [ -d ".venv" ] || uv venv
 # install the repo dependencies with GPU support (CUDA 13.0)
@@ -54,6 +59,10 @@ echo "Installing dependencies with CUDA 13.0 support..."
 uv sync --extra gpu
 # activate venv so that `python` uses the project's venv instead of system python
 source .venv/bin/activate
+
+# Install wandb for experiment tracking
+echo "Installing wandb for experiment tracking..."
+uv pip install wandb
 
 # Install Rust / Cargo
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
@@ -82,7 +91,7 @@ unzip -q eval_bundle.zip
 rm eval_bundle.zip
 mv eval_bundle "$HOME/.cache/nanochat"
 
-# Log in to wandb
+# Log in to wandb (virtual environment is already active)
 echo "Logging in to wandb..."
 wandb login
 
