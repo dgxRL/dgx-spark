@@ -92,20 +92,24 @@ fi
 # install the repo dependencies with GPU support (CUDA 13.0)
 echo "Installing dependencies with CUDA 13.0 support..."
 uv sync --extra gpu
+
+# Force reinstall PyTorch with CUDA 13.0 from PyTorch index
+# uv sync may install CPU version despite env vars, so we force the CUDA version
+echo "Ensuring PyTorch CUDA 13.0 installation..."
+uv pip install --reinstall --force torch==2.9.1 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu130
+
 # activate venv so that `python` uses the project's venv instead of system python
 source .venv/bin/activate
 
 # Verify PyTorch was installed with CUDA support
 INSTALLED_TORCH=$(python -c "import torch; print(torch.__version__)" 2>/dev/null || echo "none")
+echo "Installed PyTorch version: $INSTALLED_TORCH"
 if [[ ! "$INSTALLED_TORCH" =~ cu130 ]]; then
-    echo "WARNING: PyTorch $INSTALLED_TORCH does not have CUDA 13.0 support!"
-    echo "Force reinstalling PyTorch with CUDA 13.0..."
-    uv pip uninstall -y torch torchvision torchaudio 2>/dev/null || true
-    uv pip install torch==2.9.1+cu130 --index-url https://download.pytorch.org/whl/cu130
-    # Verify again
-    INSTALLED_TORCH=$(python -c "import torch; print(torch.__version__)" 2>/dev/null)
-    echo "PyTorch version after reinstall: $INSTALLED_TORCH"
+    echo "ERROR: Failed to install PyTorch with CUDA 13.0 support!"
+    echo "Got: $INSTALLED_TORCH"
+    exit 1
 fi
+echo "✓ PyTorch CUDA 13.0 verified"
 
 # Install wandb for experiment tracking
 echo "Installing wandb for experiment tracking..."
