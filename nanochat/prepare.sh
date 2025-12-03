@@ -101,18 +101,21 @@ uv pip uninstall -y torch torchvision torchaudio 2>/dev/null || true
 # Then install from PyTorch CUDA index
 uv pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu130
 
-# activate venv so that `python` uses the project's venv instead of system python
-source .venv/bin/activate
-
-# Verify PyTorch was installed with CUDA support
-INSTALLED_TORCH=$(python -c "import torch; print(torch.__version__)" 2>/dev/null || echo "none")
+# Verify PyTorch was installed with CUDA support (check with uv pip list)
+INSTALLED_TORCH=$(uv pip list | grep "^torch " | awk '{print $2}')
 echo "Installed PyTorch version: $INSTALLED_TORCH"
 if [[ ! "$INSTALLED_TORCH" =~ cu130 ]]; then
     echo "ERROR: Failed to install PyTorch with CUDA 13.0 support!"
-    echo "Got: $INSTALLED_TORCH"
+    echo "Got: $INSTALLED_TORCH (expected version with +cu130 suffix)"
+    echo ""
+    echo "Checking what uv pip sees:"
+    uv pip list | grep torch
     exit 1
 fi
 echo "✓ PyTorch CUDA 13.0 verified"
+
+# activate venv so that `python` uses the project's venv instead of system python
+source .venv/bin/activate
 
 # Install wandb for experiment tracking
 echo "Installing wandb for experiment tracking..."
