@@ -81,6 +81,11 @@ source "$HOME/.cargo/env" 2>/dev/null || true
 echo "Activating Python virtual environment..."
 source .venv/bin/activate
 
+echo "Debug info:"
+echo "  which python: $(which python)"
+echo "  VIRTUAL_ENV: $VIRTUAL_ENV"
+echo "  pwd: $(pwd)"
+
 # Verify PyTorch has CUDA support
 echo "Verifying PyTorch CUDA support..."
 TORCH_VERSION=$(python -c "import torch; print(torch.__version__)" 2>/dev/null)
