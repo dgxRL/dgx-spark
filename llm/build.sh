@@ -2,6 +2,7 @@
 #
 # Build Script for vLLM Docker Image on NVIDIA DGX Spark
 # This builds a custom vLLM container optimized for Grace Blackwell GB10
+# using the latest vLLM source from GitHub.
 #
 
 set -e
@@ -11,7 +12,7 @@ echo "vLLM Docker Image Builder"
 echo "======================================"
 echo ""
 echo "This will build a custom vLLM image using:"
-echo "  - NVIDIA's base vLLM container (25.09)"
+echo "  - NVIDIA's latest vLLM container"
 echo "  - Latest vLLM source from GitHub"
 echo "  - CUDA 13 support for Grace Blackwell"
 echo ""
@@ -27,17 +28,17 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
 fi
 
 echo ""
-echo "Building vllm-custom:25.09..."
+echo "Building vllm-custom:latest..."
 echo ""
 
-docker build -t vllm-custom:25.09 .
+docker build --no-cache -t vllm-custom:latest .
 
 echo ""
 echo "======================================"
 echo "Build complete!"
 echo "======================================"
 echo ""
-echo "Image: vllm-custom:25.09"
+echo "Image: vllm-custom:latest"
 echo ""
 echo "Next steps:"
 echo "  1. Run a model:  ./run.sh"

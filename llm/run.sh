@@ -32,6 +32,6 @@ docker run -it --gpus all -p ${PORT}:8000 \
     --ulimit memlock=-1 --ulimit stack=67108864 \
     -v ~/.cache/huggingface:/root/.cache/huggingface \
     -v ~/.cache/vllm:/root/.cache/vllm \
-    --rm vllm-custom:25.09 \
+    --rm vllm-custom:latest \
     vllm serve "$MODEL" --max-model-len "$MAX_LEN"
 

@@ -7,11 +7,12 @@
 set -e
 
 # Default values
-CONTAINER_NAME="vllm-server"
+CONTAINER_NAME="vllm-mistral"
 IMAGE_NAME="vllm-custom:latest"
-MODEL="Qwen/Qwen3-VL-30B-A3B-Instruct-FP8"
+#IMAGE_NAME="nvcr.io/nvidia/vllm:25.11-py3"
+MODEL="mistralai/Ministral-3-14B-Instruct-2512"
 MAX_LEN="32768"
-PORT="8000"
+PORT="8001"
 
 # Function to check if container is running
 is_running() {
