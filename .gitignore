@@ -221,3 +221,6 @@ nanochat/.gradio/certificate.pem
 nanochat/hf_models*
 archive/
 nanochat/jason_hf_prepare.sh
+llm/.tinyllm/prompts.json
+llm/c
+nanochat/c2
